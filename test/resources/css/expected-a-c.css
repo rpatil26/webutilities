@@ -1,0 +1,16 @@
+.A{
+    width:100px;
+}
+/*This is a comment*/
+.A.p{
+    text-align:center;
+    /*This is another comment*/
+    color:black;
+    font-family:arial;
+}
+.C{
+    padding:30px;
+}
+.C hr {color:sienna;}
+.C p {margin-left:20px;}
+body {background-image:url("/webutilities/resources/css/images/back40.gif");}
