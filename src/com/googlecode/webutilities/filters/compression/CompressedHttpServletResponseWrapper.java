@@ -18,6 +18,8 @@
 
 package com.googlecode.webutilities.filters.compression;
 
+import com.googlecode.webutilities.filters.common.IgnoreAcceptContext;
+
 import javax.servlet.ServletOutputStream;
 import javax.servlet.http.HttpServletResponse;
 import javax.servlet.http.HttpServletResponseWrapper;
@@ -50,7 +52,7 @@ public class CompressedHttpServletResponseWrapper extends HttpServletResponseWra
     private String savedContentEncoding;
     private String savedETag;
 
-    private String[] mimesToIgnore;
+    private IgnoreAcceptContext ignoreAcceptContext;
 
     private boolean mimeIgnored;
     private boolean noTransformSet;
@@ -73,7 +75,7 @@ public class CompressedHttpServletResponseWrapper extends HttpServletResponseWra
 
     public CompressedHttpServletResponseWrapper(HttpServletResponse httpResponse,
                                          EncodedStreamsFactory encodedStreamsFactory,
-                                         String contentEncoding, int threshold, String[] mimesToIgnore) {
+                                         String contentEncoding, int threshold, IgnoreAcceptContext IgnoreAcceptContext) {
         super(httpResponse);
         this.httpResponse = httpResponse;
         this.compressedContentEncoding = contentEncoding;
@@ -81,7 +83,7 @@ public class CompressedHttpServletResponseWrapper extends HttpServletResponseWra
         this.encodedStreamsFactory = encodedStreamsFactory;
         mimeIgnored = false;
         this.threshold = threshold;
-        this.mimesToIgnore = mimesToIgnore;
+        this.ignoreAcceptContext = IgnoreAcceptContext;
     }
 
     @Override
@@ -282,16 +284,11 @@ public class CompressedHttpServletResponseWrapper extends HttpServletResponseWra
 
     @Override
     public void setContentType(String contentType) {
-        mimeIgnored = isContentTypeToBeIgnored(contentType);
         httpResponse.setContentType(contentType);
+        mimeIgnored = ignoreAcceptContext != null && !ignoreAcceptContext.isMIMEAccepted(contentType);
         if (mimeIgnored && compressingStream != null) {
             cancelCompression();
         }
-    }
-
-    @Override
-    public String toString() {
-        return "CompressingHttpServletResponse[compressing: " + compressing + ']';
     }
 
     public boolean isCompressed() {
@@ -341,30 +338,6 @@ public class CompressedHttpServletResponseWrapper extends HttpServletResponseWra
         if (printWriter != null) {
             printWriter.flush();
         }
-    }
-
-    private boolean isContentTypeToBeIgnored(String contentType) {
-        if (contentType != null) {
-            contentType = contentType.replaceAll(";.*", "");
-        } else {
-            return false;
-        }
-
-        for (String compressionEncoding : EncodedStreamsFactory.SUPPORTED_ENCODINGS.keySet()) {
-            if (contentType.contains(compressionEncoding)) {
-                return true;
-            }
-        }
-
-        if (mimesToIgnore == null) return false;
-
-        for (String aMime : this.mimesToIgnore) {
-            if ((aMime.endsWith("/*") && contentType.startsWith(aMime.replace("*", "")))
-                    || aMime.equals(contentType)) {
-                return true;
-            }
-        }
-        return false;
     }
 
     private static boolean alreadyCompressedEncoding(String encoding) {

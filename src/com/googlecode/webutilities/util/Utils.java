@@ -33,7 +33,7 @@ public final class Utils {
      * @return int parsed value or the default value in case parsing failed
      */
     public static int readInt(String string, int defaultValue) {
-        int returnValue = defaultValue;
+        int returnValue  ;
         try {
             returnValue = Integer.parseInt(string);
         } catch (Exception e) {
@@ -49,7 +49,7 @@ public final class Utils {
      * @return long parsed value or the default value in case parsing failed
      */
     public static long readLong(String string, long defaultValue) {
-        long returnValue = defaultValue;
+        long returnValue  ;
         try {
             returnValue = Long.parseLong(string);
         } catch (Exception e) {
@@ -116,7 +116,7 @@ public final class Utils {
             relativePathFromParent = relativePathFromParent.replaceFirst("(./)+","");
         }
 
-        String path = "";
+        String path  ;
 
         if (relativePathFromParent.startsWith("/")) { //absolute
             path = relativePathFromParent;

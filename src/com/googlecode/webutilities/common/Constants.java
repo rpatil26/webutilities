@@ -50,6 +50,8 @@ public final class Constants {
 
     public static final String PARAM_EXPIRE_CACHE = "_expirecache_";
 
+    public static final String PARAM_RESET_CACHE = "_resetcache_";
+
     public static final String PARAM_SKIP_CACHE = "_skipcache_";
 
     public static final String PARAM_DEBUG = "_dbg_";

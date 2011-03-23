@@ -26,9 +26,7 @@ import java.util.HashMap;
 import java.util.Map;
 import java.util.zip.*;
 
-import static com.googlecode.webutilities.common.Constants.CONTENT_ENCODING_DEFLATE;
-import static com.googlecode.webutilities.common.Constants.CONTENT_ENCODING_GZIP;
-import static com.googlecode.webutilities.common.Constants.CONTENT_ENCODING_COMPRESS;
+import static com.googlecode.webutilities.common.Constants.*;
 
 public abstract class EncodedStreamsFactory {
 
@@ -50,10 +48,6 @@ public abstract class EncodedStreamsFactory {
         map.put(CONTENT_ENCODING_COMPRESS, ZIP_ENCODED_STREAMS_FACTORY);
         map.put(CONTENT_ENCODING_DEFLATE, DEFLATE_ENCODED_STREAMS_FACTORY);
         return Collections.unmodifiableMap(map);
-    }
-
-    public static boolean isResponseContentEncodingSupported(String contentEncoding) {
-        return SUPPORTED_ENCODINGS.containsKey(contentEncoding);
     }
 
     public static boolean isRequestContentEncodingSupported(String contentEncoding) {
@@ -106,11 +100,25 @@ class ZIPEncodedStreamsFactory extends EncodedStreamsFactory {
         return new CompressedOutput() {
             private final ZipOutputStream zipOutputStream = new ZipOutputStream(outputStream);
 
+            boolean entryAdded = false;
+
             public OutputStream getCompressedOutputStream() {
+                if(!entryAdded){
+                    try{
+                        ZipEntry entry = new ZipEntry("compressed-response.out");
+                        zipOutputStream.putNextEntry(entry);
+                        entryAdded = true;
+                    }catch (IOException ioe){
+                        //ignore
+                    }
+                }
                 return zipOutputStream;
             }
 
             public void finish() throws IOException {
+                if(entryAdded){
+                    zipOutputStream.closeEntry();
+                }
                 zipOutputStream.finish();
             }
         };

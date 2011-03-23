@@ -16,23 +16,22 @@
 
 package com.googlecode.webutilities.test.servlets;
 
-import static com.googlecode.webutilities.common.Constants.*;
+import com.googlecode.webutilities.servlets.JSCSSMergeServlet;
+import com.googlecode.webutilities.test.util.TestUtils;
+import com.googlecode.webutilities.util.Utils;
+import com.mockrunner.mock.web.WebMockObjectFactory;
+import com.mockrunner.servlet.ServletTestModule;
+import junit.framework.TestCase;
 
+import javax.servlet.Filter;
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
 import java.util.Properties;
 import java.util.logging.Logger;
 
-import junit.framework.TestCase;
-
-import com.googlecode.webutilities.servlets.JSCSSMergeServlet;
-import com.googlecode.webutilities.test.util.TestUtils;
-import com.googlecode.webutilities.util.Utils;
-import com.mockrunner.mock.web.WebMockObjectFactory;
-import com.mockrunner.servlet.ServletTestModule;
-
-import javax.servlet.Filter;
+import static com.googlecode.webutilities.common.Constants.HEADER_EXPIRES;
+import static com.googlecode.webutilities.common.Constants.HEADER_LAST_MODIFIED;
 
 public class JSCSSMergeServletTest extends TestCase {
 
@@ -115,7 +114,7 @@ public class JSCSSMergeServletTest extends TestCase {
         if (filter != null && !filter.trim().equals("")) {
             String[] filtersString = filter.split(",");
             for(String filterClass: filtersString){
-                Class clazz = Class.forName(filterClass);
+                Class<?> clazz = Class.forName(filterClass);
                 Filter f = servletTestModule.createFilter(clazz);
                 if(!filters.contains(f)){
                     filters.add(f);
@@ -129,7 +128,7 @@ public class JSCSSMergeServletTest extends TestCase {
 
         String expectedResource = properties.getProperty(this.currentTestNumber + ".test.expected");
         if (expectedResource == null || expectedResource.trim().equals("")) return null;
-        return TestUtils.readContents(this.getClass().getResourceAsStream(expectedResource));
+        return TestUtils.readContents(this.getClass().getResourceAsStream(expectedResource),webMockObjectFactory.getMockResponse().getCharacterEncoding());
 
     }
 

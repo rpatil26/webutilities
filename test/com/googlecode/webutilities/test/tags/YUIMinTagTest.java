@@ -16,18 +16,17 @@
 
 package com.googlecode.webutilities.test.tags;
 
-import java.util.HashMap;
-import java.util.Map;
-import java.util.Properties;
-import java.util.logging.Logger;
-
-import junit.framework.TestCase;
-
 import com.googlecode.webutilities.tags.YUIMinTag;
 import com.googlecode.webutilities.test.util.TestUtils;
 import com.mockrunner.mock.web.WebMockObjectFactory;
 import com.mockrunner.tag.NestedTag;
 import com.mockrunner.tag.TagTestModule;
+import junit.framework.TestCase;
+
+import java.util.HashMap;
+import java.util.Map;
+import java.util.Properties;
+import java.util.logging.Logger;
 
 public class YUIMinTagTest extends TestCase {
 
@@ -68,7 +67,7 @@ public class YUIMinTagTest extends TestCase {
             String[] resources = resourcesString.split(",");
             for (String resource : resources) {
                 logger.info("Setting resource : " + resource);
-                yuiMinTag.addTextChild(TestUtils.readContents(this.getClass().getResourceAsStream(resource)));
+                yuiMinTag.addTextChild(TestUtils.readContents(this.getClass().getResourceAsStream(resource),webMockObjectFactory.getMockResponse().getCharacterEncoding()));
             }
         }
     }
@@ -77,7 +76,7 @@ public class YUIMinTagTest extends TestCase {
 
         String expectedResource = properties.getProperty(this.currentTestNumber + ".test.expected");
         if (expectedResource == null || expectedResource.trim().equals("")) return null;
-        return TestUtils.readContents(this.getClass().getResourceAsStream(expectedResource));
+        return TestUtils.readContents(this.getClass().getResourceAsStream(expectedResource),webMockObjectFactory.getMockResponse().getCharacterEncoding());
 
     }
 

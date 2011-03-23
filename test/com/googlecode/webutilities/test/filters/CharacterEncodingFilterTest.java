@@ -16,16 +16,15 @@
 
 package com.googlecode.webutilities.test.filters;
 
-import java.util.Properties;
-import java.util.logging.Logger;
-
-import junit.framework.TestCase;
-
 import com.googlecode.webutilities.filters.CharacterEncodingFilter;
 import com.googlecode.webutilities.servlets.JSCSSMergeServlet;
 import com.googlecode.webutilities.util.Utils;
 import com.mockrunner.mock.web.WebMockObjectFactory;
 import com.mockrunner.servlet.ServletTestModule;
+import junit.framework.TestCase;
+
+import java.util.Properties;
+import java.util.logging.Logger;
 
 public class CharacterEncodingFilterTest extends TestCase {
 
@@ -145,13 +144,19 @@ public class CharacterEncodingFilterTest extends TestCase {
 
             String actualResponseEncoding = webMockObjectFactory.getMockResponse().getCharacterEncoding();
 
-            String expectedEncoding = this.getExpectedEncoding();
+            String expectedEncodings = this.getExpectedEncoding();
 
-            if (force) {
-                assertEquals(expectedEncoding.trim(), actualResponseEncoding.trim());
+            if(expectedEncodings != null){ //request:response -> UTF-8:ISO-8859-1 - requ
+                String[] expectedReqEncResEnc = expectedEncodings.split(":");
+                if(force){
+                    if(expectedReqEncResEnc.length > 1){
+                        assertEquals(expectedReqEncResEnc[1], actualResponseEncoding);
+                    }else{
+                        assertEquals(expectedReqEncResEnc[0], actualResponseEncoding);
+                    }
+                }
+                assertEquals(expectedReqEncResEnc[0], actualRequestEncoding);
             }
-
-            assertEquals(expectedEncoding, actualRequestEncoding);
 
             this.post();
 

@@ -17,17 +17,14 @@
  */
 package com.googlecode.webutilities.filters;
 
+import com.googlecode.webutilities.common.Constants;
+import com.googlecode.webutilities.filters.common.AbstractFilter;
 import com.googlecode.webutilities.filters.compression.CompressedHttpServletRequestWrapper;
 import com.googlecode.webutilities.filters.compression.CompressedHttpServletResponseWrapper;
 import com.googlecode.webutilities.filters.compression.EncodedStreamsFactory;
 import com.googlecode.webutilities.util.Utils;
 
-import javax.servlet.Filter;
-import javax.servlet.FilterChain;
-import javax.servlet.FilterConfig;
-import javax.servlet.ServletException;
-import javax.servlet.ServletRequest;
-import javax.servlet.ServletResponse;
+import javax.servlet.*;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import java.io.IOException;
@@ -40,10 +37,12 @@ import static com.googlecode.webutilities.common.Constants.*;
  * and also respond with compressed contents supporting gzip, compress or
  * deflate compression encoding.
  *
+ * Visit http://code.google.com/p/webutilities/wiki/CompressionFilter for more details.
+ *
  * @author rpatil
  * @since 0.0.4
  */
-public class CompressionFilter implements Filter {
+public class CompressionFilter extends AbstractFilter {
 
     /**
      * Logger
@@ -51,30 +50,9 @@ public class CompressionFilter implements Filter {
     private static final Logger logger = Logger.getLogger(CompressionFilter.class.getName());
 
     /**
-     * The filter configuration object we are associated with.  If this value
-     * is null, this filter instance is not currently configured.
-     */
-    private FilterConfig config = null;
-
-    /**
-     * The threshold number to compress
+     * The threshold number of bytes) to compress
      */
     private int compressionThreshold = DEFAULT_COMPRESSION_SIZE_THRESHOLD;
-
-    /**
-     * Pattern to ignore to perform GZIP
-     */
-    private String ignoreUserAgentsPattern;
-
-    /**
-     * Comma separated list of mimes to ignore
-     */
-    private String ignoreMimes; //eg. "image/jpg, image/png, video/*"
-
-    /**
-     * URL Pattern to ignore
-     */
-    private String ignoreURLPattern;
 
     /**
      * To mark the request that it is processed
@@ -90,24 +68,14 @@ public class CompressionFilter implements Filter {
      * @see javax.servlet.Filter#init(javax.servlet.FilterConfig)
      */
     @Override
-    public void init(FilterConfig filterConfig) {
-        config = filterConfig;
-        this.ignoreUserAgentsPattern = filterConfig.getInitParameter("ignoreUserAgentsPattern");
+    public void init(FilterConfig filterConfig) throws ServletException {
+        super.init(filterConfig);
+        
         int compressionMinSize = Utils.readInt(filterConfig.getInitParameter("compressionThreshold"), this.compressionThreshold);
-        this.ignoreURLPattern = filterConfig.getInitParameter("ignoreURLPattern");
-        this.ignoreMimes = filterConfig.getInitParameter("ignoreMimes");
-
+        
         if (compressionMinSize > 0) { // priority given to configured value
             this.compressionThreshold = compressionMinSize;
         }
-    }
-
-    /* (non-Javadoc)
-     * @see javax.servlet.Filter#destroy()
-     */
-    @Override
-    public void destroy() {
-        this.config = null;
     }
 
     /* (non-Javadoc)
@@ -197,11 +165,6 @@ public class CompressionFilter implements Filter {
         return contentEncoding;
     }
 
-    private String[] getListOfMimesToIgnore() {
-        if (ignoreMimes == null) return null;
-        return ignoreMimes.split(",");
-    }
-
     private ServletResponse getResponse(ServletRequest request, ServletResponse response) {
         if (response.isCommitted() || request.getAttribute(PROCESSED_ATTR) != null) {
             logger.finest("No Compression: Response committed or filter has already been applied");
@@ -227,13 +190,13 @@ public class CompressionFilter implements Filter {
         }
 
         String requestURI = httpRequest.getRequestURI();
-        if (isPathIgnored(requestURI)) {
+        if (!isURLAccepted(requestURI)) {
             logger.finest("No Compression: For path: " + requestURI);
             return response;
         }
 
-        String userAgent = httpRequest.getHeader("User-Agent");
-        if (isUserAgentIgnored(userAgent)) {
+        String userAgent = httpRequest.getHeader(Constants.HTTP_USER_AGENT_HEADER);
+        if (!isUserAgentAccepted(userAgent)) {
             logger.finest("No Compression: For User-Agent: " + userAgent);
             return response;
         }
@@ -242,41 +205,7 @@ public class CompressionFilter implements Filter {
 
         logger.finest("Using Compression: For content encoding : " + contentEncoding);
 
-        return new CompressedHttpServletResponseWrapper(httpResponse, encodedStreamsFactory, contentEncoding, compressionThreshold, getListOfMimesToIgnore());
-    }
-
-    /**
-     * Set FilterConfig
-     *
-     * @param filterConfig The filter configuration object
-     */
-    public void setFilterConfig(FilterConfig filterConfig) {
-        init(filterConfig);
-    }
-
-    /**
-     * Return FilterConfig
-     *
-     * @return FilterConfig
-     */
-    public FilterConfig getFilterConfig() {
-        return config;
-    }
-
-    /**
-     * @param path URL path
-     * @return true if given path is not null and is ignored false otherwise
-     */
-    public boolean isPathIgnored(String path) {
-        return path != null && ignoreURLPattern != null && path.matches(ignoreURLPattern);
-    }
-
-    /**
-     * @param userAgent userAgent string for the client
-     * @return true if given user agent matches ignored criteria false otherwise
-     */
-    public boolean isUserAgentIgnored(String userAgent) {
-        return userAgent != null && ignoreUserAgentsPattern != null && userAgent.matches(ignoreUserAgentsPattern);
+        return new CompressedHttpServletResponseWrapper(httpResponse, encodedStreamsFactory, contentEncoding, compressionThreshold, this);
     }
 
 }

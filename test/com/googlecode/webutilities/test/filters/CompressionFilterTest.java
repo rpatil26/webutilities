@@ -18,6 +18,7 @@ package com.googlecode.webutilities.test.filters;
 
 import com.googlecode.webutilities.filters.CompressionFilter;
 import com.googlecode.webutilities.servlets.JSCSSMergeServlet;
+import com.googlecode.webutilities.test.util.TestUtils;
 import com.mockrunner.mock.web.WebMockObjectFactory;
 import com.mockrunner.servlet.ServletTestModule;
 import junit.framework.TestCase;
@@ -31,7 +32,7 @@ public class CompressionFilterTest extends TestCase {
 
     private JSCSSMergeServlet jscssMergeServlet = new JSCSSMergeServlet();
 
-    private CompressionFilter gzipCompressionFilter = new CompressionFilter();
+    private CompressionFilter compressionFilter = new CompressionFilter();
 
     private WebMockObjectFactory webMockObjectFactory = new WebMockObjectFactory();
 
@@ -102,6 +103,14 @@ public class CompressionFilterTest extends TestCase {
 
     }
 
+    private String getExpectedOutput() throws Exception {
+
+        String expectedResource = properties.getProperty(this.currentTestNumber + ".test.expected.output");
+        if (expectedResource == null || expectedResource.trim().equals("")) return null;
+        return TestUtils.readContents(this.getClass().getResourceAsStream(expectedResource),webMockObjectFactory.getMockResponse().getCharacterEncoding());
+
+    }
+
     private void pre() throws Exception {
 
 
@@ -113,7 +122,7 @@ public class CompressionFilterTest extends TestCase {
 
         servletTestModule.setServlet(jscssMergeServlet, true);
 
-        servletTestModule.addFilter(gzipCompressionFilter, true);
+        servletTestModule.addFilter(compressionFilter, true);
 
         servletTestModule.setDoChain(true);
 
@@ -156,8 +165,19 @@ public class CompressionFilterTest extends TestCase {
                 assertNotNull("Actual Encoding expected was " + expectedEncoding + " but found null.", actualResponseEncoding);
 
                 assertEquals(expectedEncoding.trim(), actualResponseEncoding.trim());
-
                 assertEquals(actualVary.trim(), HTTP_ACCEPT_ENCODING_HEADER);
+
+                String expected = getExpectedOutput();
+                String actual = servletTestModule.getOutput();
+                if(expected != null){ //!NEED TO REMOVE AND ADD .output in test cases - to test deflate also
+                    if(expectedEncoding.equalsIgnoreCase("gzip")){
+                        assertTrue("Contents not matching for test: " + currentTestNumber, TestUtils.compressedContentEquals(expected,actual));
+                    }else if(!expectedEncoding.equalsIgnoreCase("compress")){
+                        //WE ARE NOT ABLE TO TEST COMPRESS ENCODING AT THIS TIME :(
+                        //IT DIFFERS IN HEADER, FILENAME AND FOOTER when compared with one created from zip command
+                        assertEquals(expected, actual);
+                    }
+                }
             }
 
             this.post();

@@ -16,26 +16,23 @@
 
 package com.googlecode.webutilities.filters;
 
-import static com.googlecode.webutilities.common.Constants.*;
-
-import java.io.IOException;
-import java.io.StringReader;
-import java.io.Writer;
-import java.util.logging.Logger;
-
-import javax.servlet.Filter;
-import javax.servlet.FilterChain;
-import javax.servlet.FilterConfig;
-import javax.servlet.ServletException;
-import javax.servlet.ServletRequest;
-import javax.servlet.ServletResponse;
-import javax.servlet.http.HttpServletRequest;
-import javax.servlet.http.HttpServletResponse;
-
+import com.googlecode.webutilities.common.Constants;
 import com.googlecode.webutilities.common.ServletResponseWrapper;
+import com.googlecode.webutilities.filters.common.AbstractFilter;
 import com.googlecode.webutilities.util.Utils;
 import com.yahoo.platform.yui.compressor.CssCompressor;
 import com.yahoo.platform.yui.compressor.JavaScriptCompressor;
+
+import javax.servlet.*;
+import javax.servlet.http.HttpServletRequest;
+import javax.servlet.http.HttpServletResponse;
+import java.io.IOException;
+import java.io.StringReader;
+import java.io.Writer;
+import java.nio.charset.Charset;
+import java.util.logging.Logger;
+
+import static com.googlecode.webutilities.common.Constants.*;
 
 /**
  * The <code>YUIMinFilter</code> is implemented as Servlet Filter to enable on the fly minification of JS and CSS resources
@@ -87,23 +84,23 @@ import com.yahoo.platform.yui.compressor.JavaScriptCompressor;
  *  <b>preserveSemi</b> - equivalent to YUICompressor --preserve-semi. Preserve all semicolons. Default false.
  *  <b>disableOptimizations</b> - equivalent to YUICompressor --disable-optimizations. Disable all micro optimizations. Default false.
  *  <b>useCache</b> - to cache the earlier minified contents and serve from cache. Default true.
+ *  <b>charset</b> - to use specified charset
  * </pre>
  * <h3>Dependency</h3>
  * <p>The <code>YUIMinFilter</code> depends on servlet-api and YUICompressor jar to be in the classpath.</p>
  * <p><b>servlet-api.jar</b> - Must be already present in your webapp classpath</p>
  * <p><b>yuicompressor-x.y.z.jar</b> - Download and put appropriate version of this jar in your classpath (in WEB-INF/lib)</p>
  * <h3>Limitations</h3>
- * <p>Current version of <code>YUIMinFilter</code> <b>does not support charset</b> option.</p>
  * <p> As a best practice you should also add appropriate expires header on static resources so that browser caches them and doesn't request them again and again.
  * You can use the <code>JSCSSMergeServlet</code> from <code>webutilities.jar</code> to add expires header on JS and CSS. It also helps combines multiple JS or CSS requests in one HTTP request. See <code>JSCSSMergeServlet</code> for details.
  * </p>
  *
+ * Visit http://code.google.com/p/webutilities/wiki/YUIMinFilter for more details.
+ *
  * @author rpatil
  * @version 1.0
  */
-public class YUIMinFilter implements Filter {
-
-    private FilterConfig config;
+public class YUIMinFilter extends AbstractFilter {
 
     private String charset = DEFAULT_CHARSET;
 
@@ -114,6 +111,8 @@ public class YUIMinFilter implements Filter {
     private static final String INIT_PARAM_PRESERVE_SEMI = "preserveSemi";
 
     private static final String INIT_PARAM_DISABLE_OPTIMIZATIONS = "disableOptimizations";
+
+    private static final String INIT_PARAM_CHARSET = "charset";
 
     private int lineBreak = -1;
 
@@ -129,11 +128,6 @@ public class YUIMinFilter implements Filter {
     private static final Logger logger = Logger.getLogger(YUIMinFilter.class.getName());
 
     @Override
-    public void destroy() {
-        this.config = null;
-    }
-
-    @Override
     public void doFilter(ServletRequest req, ServletResponse resp,
                          FilterChain chain) throws IOException, ServletException {
 
@@ -147,18 +141,25 @@ public class YUIMinFilter implements Filter {
 
         boolean alreadyProcessed = req.getAttribute(PROCESSED_ATTR) != null;
 
-        if (!alreadyProcessed && config != null && (lowerUrl.endsWith(EXT_JS) || lowerUrl.endsWith(EXT_JSON) || lowerUrl.endsWith(EXT_CSS))) {
+        if (!alreadyProcessed && isURLAccepted (url) && isUserAgentAccepted(rq.getHeader(Constants.HTTP_USER_AGENT_HEADER)) && (lowerUrl.endsWith(EXT_JS) || lowerUrl.endsWith(EXT_JSON) || lowerUrl.endsWith(EXT_CSS))) {
 
-            req.setAttribute(PROCESSED_ATTR,true);
+            req.setAttribute(PROCESSED_ATTR, Boolean.TRUE);
 
             ServletResponseWrapper wrapper = new ServletResponseWrapper(rs);
             //Let the response be generated
 
             chain.doFilter(req, wrapper);
 
+            Writer out = resp.getWriter();
+
+            if(!isMIMEAccepted(wrapper.getContentType())){
+                out.write(wrapper.getContents());
+                out.flush();
+                return;
+            }
+
             StringReader sr = new StringReader(new String(wrapper.getBytes(), this.charset));
 
-            Writer out = resp.getWriter();
             //work on generated response
             if (lowerUrl.endsWith(EXT_JS) || lowerUrl.endsWith(EXT_JSON) || (wrapper.getContentType() != null && (wrapper.getContentType().equals(MIME_JS) || wrapper.getContentType().equals(MIME_JSON)))) {
                 JavaScriptCompressor compressor = new JavaScriptCompressor(sr, null);
@@ -182,13 +183,22 @@ public class YUIMinFilter implements Filter {
     @Override
     public void init(FilterConfig config) throws ServletException {
 
-        this.config = config;
-        //this.charset = ifValidString(this.config.getInitParameter("charset"), this.charset);
-        this.lineBreak = Utils.readInt(this.config.getInitParameter(INIT_PARAM_LINE_BREAK), this.lineBreak);
+        super.init(config);
 
-        this.noMunge = Utils.readBoolean(this.config.getInitParameter(INIT_PARAM_NO_MUNGE), this.noMunge);
-        this.preserveSemi = Utils.readBoolean(this.config.getInitParameter(INIT_PARAM_PRESERVE_SEMI), this.preserveSemi);
-        this.disableOptimizations = Utils.readBoolean(this.config.getInitParameter(INIT_PARAM_DISABLE_OPTIMIZATIONS), this.disableOptimizations);
+        this.charset = this.filterConfig.getInitParameter(INIT_PARAM_CHARSET) == null ? this.charset : this.filterConfig.getInitParameter(INIT_PARAM_CHARSET);
+
+        if(!Charset.isSupported(this.charset)){
+            logger.info("Charset " + charset + " not supported. Using default: " + DEFAULT_CHARSET);
+            this.charset = DEFAULT_CHARSET;
+        }
+
+        this.lineBreak = Utils.readInt(filterConfig.getInitParameter(INIT_PARAM_LINE_BREAK), this.lineBreak);
+
+        this.noMunge = Utils.readBoolean(filterConfig.getInitParameter(INIT_PARAM_NO_MUNGE), this.noMunge);
+
+        this.preserveSemi = Utils.readBoolean(filterConfig.getInitParameter(INIT_PARAM_PRESERVE_SEMI), this.preserveSemi);
+
+        this.disableOptimizations = Utils.readBoolean(filterConfig.getInitParameter(INIT_PARAM_DISABLE_OPTIMIZATIONS), this.disableOptimizations);
 
         logger.info("Filter initialized with: " +
                 "{" +
@@ -196,6 +206,7 @@ public class YUIMinFilter implements Filter {
                 "   " + INIT_PARAM_NO_MUNGE + ":" + noMunge + "," +
                 "   " + INIT_PARAM_PRESERVE_SEMI + ":" + preserveSemi + "," +
                 "   " + INIT_PARAM_DISABLE_OPTIMIZATIONS + ":" + disableOptimizations + "," +
+                "   " + INIT_PARAM_CHARSET + ":" + charset + "," +
                 "}");
 
     }
