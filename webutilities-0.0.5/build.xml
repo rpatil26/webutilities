@@ -1,0 +1,133 @@
+<?xml version="1.0" encoding="iso-8859-1"?>
+<!--
+  ~ Copyright 2010-2011 Rajendra Patil
+  ~
+  ~  Licensed under the Apache License, Version 2.0 (the "License");
+  ~  you may not use this file except in compliance with the License.
+  ~  You may obtain a copy of the License at
+  ~
+  ~      http://www.apache.org/licenses/LICENSE-2.0
+  ~
+  ~  Unless required by applicable law or agreed to in writing, software
+  ~  distributed under the License is distributed on an "AS IS" BASIS,
+  ~  WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+  ~  See the License for the specific language governing permissions and
+  ~  limitations under the License.
+  -->
+
+<project name="Web Utilities for JS CSS Compression and Merging" default="test-and-jar" basedir=".">
+    <property file="build.properties"/>
+    <target name="clean">
+        <delete dir="${build.dir}" quiet="true"/>
+    </target>
+
+    <target name="init">
+        <mkdir dir="${build.dir}"/>
+    </target>
+
+    <path id="compile.classpath">
+        <pathelement location="${build.dir}/classes"/>
+        <fileset dir="${lib.dir}" includes="*.jar" excludes="junit*, mockrunner*, logback*, logging*"/>
+    </path>
+    <path id="test.classpath">
+        <pathelement location="${build.dir}/test-classes"/>
+        <fileset dir="${lib.dir}" includes="junit*, mockrunner*, logback*, logging*"/>
+    </path>
+
+    <target name="compile" depends="init">
+        <copy todir="${build.dir}/classes">
+            <fileset dir="${src.dir}/resources" includes="**/*.conf"/>
+        </copy>
+        <mkdir dir="${build.dir}/classes"/>
+        <javac srcdir="${src.dir}/java"
+               destdir="${build.dir}/classes"
+               includes="**/*.java"
+               deprecation="off"
+               debug="on"
+               source="1.6"
+               target="1.6" includeantruntime="true">
+            <exclude name="**/modules/**"/>
+            <exclude name="**/filters/Module*"/>
+            <classpath refid="compile.classpath"/>
+        </javac>
+    </target>
+
+    <target name="compileTests" depends="compile">
+        <mkdir dir="${build.dir}/test-classes"/>
+        <javac srcdir="${test.dir}/java"
+               destdir="${build.dir}/test-classes"
+               includes="**/*.java"
+               deprecation="off"
+               debug="on"
+               source="1.6"
+               target="1.6" includeantruntime="true">
+            <classpath refid="compile.classpath"/>
+            <classpath refid="test.classpath"/>
+        </javac>
+        <copy todir="${build.dir}/test-classes/resources">
+            <fileset dir="${test.dir}/resources"/>
+        </copy>
+        <copy todir="${build.dir}/test-classes/">
+            <fileset dir="${test.dir}/java" includes="**/*.properties"/>
+        </copy>
+    </target>
+
+    <target name="test" depends="compileTests">
+        <mkdir dir="${build.dir}/test-reports"/>
+        <junit printsummary="yes" haltonfailure="yes" fork="yes">
+            <formatter type="xml" usefile="true"/>
+            <classpath refid="compile.classpath"/>
+            <classpath refid="test.classpath"/>
+            <batchtest fork="yes" todir="${build.dir}/test-reports">
+                <fileset dir="${test.dir}/java">
+                    <include name="**/*Test.java"/>
+                </fileset>
+            </batchtest>
+        </junit>
+    </target>
+
+    <target name="jar" depends="compile">
+        <jar destfile="${build.dir}/${jar.name}" basedir="${build.dir}/classes">
+            <include name="**/*.class"/>
+            <include name="**/*.conf"/>
+            <metainf dir="${meta-inf.dir}"/>
+        </jar>
+    </target>
+
+    <target name="javadoc" depends="compile">
+        <delete dir="${doc.dir}" quiet="true"/>
+        <javadoc packagenames="com.googlecode.webutilities.*"
+                 destdir="${build.dir}/${doc.dir}"
+                 author="true"
+                 private="false"
+                 version="true">
+            <classpath refid="compile.classpath"/>
+            <sourcepath>
+                <pathelement path="${src.dir}/java"/>
+            </sourcepath>
+        </javadoc>
+    </target>
+
+    <target name="dist" depends="jar">
+        <mkdir dir="${build.dir}/${dist.package.name}"/>
+        <mkdir dir="${build.dir}/${dist.package.name}/build"/>
+        <copy file="${build.dir}/${jar.name}" todir="${build.dir}/${dist.package.name}/build"/>
+        <copy todir="${build.dir}/${dist.package.name}">
+            <fileset dir=".">
+                <include name="build.properties"/>
+                <include name="build.xml"/>
+                <include name="${meta-inf.dir}/*"/>
+                <include name="${build.dir}/doc/**/*"/>
+                <include name="lib/**/*"/>
+                <include name="src/**/*"/>
+                <exclude name="**/.svn"/>
+            </fileset>
+        </copy>
+        <zip destfile="${build.dir}/${dist.package.name}-src.zip"
+             basedir="${build.dir}"
+             includes="${dist.package.name}/**/*"/>
+    </target>
+
+    <target name="test-and-jar" depends="test, jar"/>
+
+</project>
