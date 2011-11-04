@@ -1,1 +1,0 @@
-var Person=function(a){this.getName=function(){return a}};var Employee=function(a,b){this.getEmpId=function(){return b}}.inherits(Person);var Manager=function(a,b,c){this.getReporties=function(){return c}}.inherits(Employee);
