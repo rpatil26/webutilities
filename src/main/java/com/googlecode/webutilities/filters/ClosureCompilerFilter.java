@@ -46,7 +46,7 @@ import javax.servlet.http.HttpServletResponse;
 import com.google.javascript.jscomp.CompilationLevel;
 import com.google.javascript.jscomp.Compiler;
 import com.google.javascript.jscomp.CompilerOptions;
-import com.google.javascript.jscomp.DefaultCodingConvention;
+import com.google.javascript.jscomp.CodingConventions;
 import com.google.javascript.jscomp.JSSourceFile;
 import com.google.javascript.jscomp.LoggerErrorManager;
 import com.google.javascript.jscomp.Result;
@@ -155,7 +155,7 @@ public class ClosureCompilerFilter extends AbstractFilter {
     private static CompilerOptions buildCompilerOptionsFromConfig(FilterConfig config) {
 
         CompilerOptions compilerOptions = new CompilerOptions();
-        compilerOptions.setCodingConvention(new DefaultCodingConvention());
+        compilerOptions.setCodingConvention(CodingConventions.getDefault());
         //List<String> processedArgs = Lists.newArrayList();
         Enumeration<String> initParams = config.getInitParameterNames();
         while (initParams.hasMoreElements()) {

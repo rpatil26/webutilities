@@ -21,11 +21,12 @@ import static com.googlecode.webutilities.common.Constants.HTTP_IF_NONE_MATCH_HE
 import static com.googlecode.webutilities.util.Utils.*;
 
 import java.io.IOException;
-import java.util.Collections;
 import java.util.Date;
-import java.util.LinkedHashMap;
 import java.util.List;
-import java.util.Map;
+import java.util.concurrent.TimeUnit;
+
+import com.google.common.cache.Cache;
+import com.google.common.cache.CacheBuilder;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -35,7 +36,6 @@ import javax.servlet.ServletContext;
 import javax.servlet.ServletException;
 import javax.servlet.ServletRequest;
 import javax.servlet.ServletResponse;
-import javax.servlet.http.Cookie;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
@@ -118,10 +118,17 @@ public class ResponseCacheFilter extends AbstractFilter {
         }*/
 
     }
-
-    private Map<String, CacheObject> cache = Collections.synchronizedMap(new LinkedHashMap<String, CacheObject>());
-
-    private int reloadTime = 0;
+    
+    private static Cache<String, CacheObject> buildCache(/*int reloadAfterAccess, */int reloadAfterWrite) {
+        CacheBuilder<Object, Object> builder = CacheBuilder.newBuilder().softValues();
+        // if(reloadAfterAccess > 0)
+        //     builder.expireAfterAccess(reloadAfterAccess, TimeUnit.SECONDS);
+        if(reloadAfterWrite > 0)
+            builder.expireAfterWrite(reloadAfterWrite, TimeUnit.SECONDS);
+        return builder.build();
+    }
+    
+    private Cache<String, CacheObject> cache;
 
     private int resetTime = 0;
 
@@ -138,11 +145,14 @@ public class ResponseCacheFilter extends AbstractFilter {
     public void init(FilterConfig filterConfig) throws ServletException {
         super.init(filterConfig);
 
-        this.reloadTime = readInt(filterConfig.getInitParameter(INIT_PARAM_RELOAD_TIME),reloadTime);
+        int reloadTime = readInt(filterConfig.getInitParameter(INIT_PARAM_RELOAD_TIME), 0);
 
         this.resetTime = readInt(filterConfig.getInitParameter(INIT_PARAM_RESET_TIME),resetTime);
 
         lastResetTime = new Date().getTime();
+
+        if (cache == null) // fixme: checking for letting the unit test happy but nothing.
+            cache = buildCache(reloadTime);
 
         LOGGER.debug("Cache Filter initialized with: {}:{},\n{}:{}",
                 new Object[]{INIT_PARAM_RELOAD_TIME, String.valueOf(reloadTime),
@@ -168,14 +178,13 @@ public class ResponseCacheFilter extends AbstractFilter {
 
         long now = new Date().getTime();
 
-        CacheObject cacheObject = cache.get(url);
+        CacheObject cacheObject = cache.getIfPresent(url);
 
-        boolean expireCache = httpServletRequest.getParameter(Constants.PARAM_EXPIRE_CACHE) != null ||
-                (cacheObject != null &&  reloadTime > 0 && (now - cacheObject.getTime())/1000 > reloadTime);
+        boolean expireCache = httpServletRequest.getParameter(Constants.PARAM_EXPIRE_CACHE) != null;
 
         if(expireCache){
             LOGGER.trace("Removing Cache for {}  due to URL parameter.", url);
-            cache.remove(url);
+            cache.invalidate(url);
         }
 
         boolean resetCache = httpServletRequest.getParameter(Constants.PARAM_RESET_CACHE) != null ||
@@ -183,7 +192,7 @@ public class ResponseCacheFilter extends AbstractFilter {
 
         if(resetCache){
             LOGGER.trace("Resetting whole Cache for {} due to URL parameter.", url);
-            cache.clear();
+            cache.invalidateAll(); // fixme: we don't need reset since cache values are soft referenced.
             lastResetTime = now;
         }
 
@@ -212,7 +221,7 @@ public class ResponseCacheFilter extends AbstractFilter {
         //If-None-match
         String requestETag = httpServletRequest.getHeader(HTTP_IF_NONE_MATCH_HEADER);
         if(!isAnyResourceETagModified(requestedResources, requestETag, null, context)){
-            cache.remove(url);
+            cache.invalidate(url);
         	this.sendNotModified(httpServletResponse);
     		return;
         }
@@ -222,7 +231,7 @@ public class ResponseCacheFilter extends AbstractFilter {
         if(cacheObject != null && cacheObject.getWebUtilitiesResponseWrapper() != null){
             if(requestedResources != null && isAnyResourceModifiedSince(requestedResources, cacheObject.getTime(), context)){
                 LOGGER.trace("Some resources have been modified since last cache: {}" , url);
-                cache.remove(url);
+                cache.invalidate(url);
                 cacheFound = false;
             }else{
                 LOGGER.trace("Found valid cached response.");
