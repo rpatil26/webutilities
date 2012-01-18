@@ -170,14 +170,14 @@ public class CompressionFilter extends AbstractFilter {
             return contentEncoding; //no encoding to be applied
         }
 
-        String[] clientAccepts = acceptEncoding.split(",");
+        String[] clientAccepts = acceptEncoding.trim().split("\\s*,\\s*");
 
         //!TODO select best encoding (based on q) when multiple encoding are accepted by client
         //@see http://stackoverflow.com/questions/3225136/http-what-is-the-preferred-accept-encoding-for-gzip-deflate
         for (String accepts : clientAccepts) {
-            if (CONTENT_ENCODING_IDENTITY.equals(accepts.trim())) {
+            if (CONTENT_ENCODING_IDENTITY.equals(accepts)) {
                 return contentEncoding;
-            } else if (EncodedStreamsFactory.SUPPORTED_ENCODINGS.containsKey(accepts.trim())) {
+            } else if (EncodedStreamsFactory.SUPPORTED_ENCODINGS.containsKey(accepts)) {
                 contentEncoding = accepts; //get first matching encoding
                 break;
             }
