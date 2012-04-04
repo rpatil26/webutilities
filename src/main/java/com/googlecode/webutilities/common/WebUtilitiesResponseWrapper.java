@@ -238,7 +238,10 @@ public class WebUtilitiesResponseWrapper extends HttpServletResponseWrapper {
                 response.setHeader(headerName, value.toString());
             }
         }
-        response.setStatus(this.getStatus());
+
+        if (this.getStatus() > 0)
+            response.setStatus(this.getStatus());
+
         this.flushWriter();
         try {
             response.getOutputStream().write(this.getBytes());
