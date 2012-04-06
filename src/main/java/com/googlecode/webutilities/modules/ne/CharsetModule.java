@@ -21,6 +21,10 @@ import com.googlecode.webutilities.modules.infra.ModuleRequest;
 import com.googlecode.webutilities.modules.infra.ModuleResponse;
 
 import javax.servlet.ServletContext;
+
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+
 import java.io.UnsupportedEncodingException;
 import java.nio.charset.Charset;
 
@@ -63,6 +67,8 @@ public class CharsetModule implements IModule {
 
 class CharsetDirective implements PreChainDirective {
 
+    public static final Logger LOGGER = LoggerFactory.getLogger(CharsetDirective.class.getName());
+
     String encoding;
 
     boolean force;
@@ -81,11 +87,11 @@ class CharsetDirective implements PreChainDirective {
                     try {
                         response.setCharacterEncoding(encoding);
                     } catch (Exception e) {
-                        e.printStackTrace();
+                        LOGGER.error(e.getMessage(), e);
                     }
                 }
             } catch (UnsupportedEncodingException e) {
-                e.printStackTrace();
+                LOGGER.error(e.getMessage(), e);
             }
         }
 

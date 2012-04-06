@@ -20,6 +20,12 @@ import javax.servlet.ServletOutputStream;
 import javax.servlet.http.Cookie;
 import javax.servlet.http.HttpServletResponse;
 import javax.servlet.http.HttpServletResponseWrapper;
+
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+
+
+
 import java.io.IOException;
 import java.io.PrintWriter;
 import java.util.HashMap;
@@ -38,6 +44,10 @@ import static com.googlecode.webutilities.common.Constants.HTTP_CONTENT_TYPE_HEA
  */
 
 public class WebUtilitiesResponseWrapper extends HttpServletResponseWrapper {
+
+    public static final Logger               LOGGER          = LoggerFactory
+                                                                     .getLogger(WebUtilitiesResponseWrapper.class
+                                                                             .getName());
 
     private WebUtilitiesResponseOutputStream stream;
     private Map<String, Object> headers = new HashMap<String, Object>();
@@ -251,7 +261,7 @@ public class WebUtilitiesResponseWrapper extends HttpServletResponseWrapper {
                 response.getWriter().write(this.getContents());
                 response.getWriter().close();
             }catch (Exception ex1){
-                ex.printStackTrace();
+                LOGGER.error(ex1.getMessage(), ex1);
             }
 
          //   ex.printStackTrace();

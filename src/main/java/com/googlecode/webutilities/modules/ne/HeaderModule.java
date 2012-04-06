@@ -23,6 +23,10 @@ import com.googlecode.webutilities.util.Utils;
 import javax.servlet.ServletContext;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
+
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+
 import java.util.*;
 
 public class HeaderModule implements IModule {
@@ -172,6 +176,8 @@ class RequestDirective implements PreChainDirective {
 
 class ResponseDirective extends RequestDirective {
 
+    public static final Logger LOGGER = LoggerFactory.getLogger(ResponseDirective.class.getName());
+
     HeaderModule.Condition condition;
 
     public ResponseDirective(HeaderModule.Condition condition, HeaderModule.Action action, String headerName, String headerValue) {
@@ -300,7 +306,7 @@ class ResponseDirective extends RequestDirective {
                 }
 
             } catch (NumberFormatException ex) {
-                ex.printStackTrace();
+                LOGGER.error(ex.getMessage(), ex);
             }
 
         }

@@ -16,11 +16,16 @@
 
 package com.googlecode.webutilities.modules.ne;
 
+
 import com.googlecode.webutilities.modules.infra.ModuleRequest;
 import com.googlecode.webutilities.modules.infra.ModuleResponse;
 
 import javax.servlet.ServletContext;
 import javax.servlet.http.HttpServletResponse;
+
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+
 import java.net.Inet4Address;
 import java.net.InetAddress;
 import java.net.UnknownHostException;
@@ -37,6 +42,8 @@ import java.util.regex.Pattern;
  * Access Deny from all|host|subnet
  */
 public class AccessModule implements IModule {
+
+    public static final Logger LOGGER = LoggerFactory.getLogger(AccessModule.class.getName());
 
     @Override
     public DirectivePair parseDirectives(String ruleString) {
@@ -69,6 +76,8 @@ public class AccessModule implements IModule {
 
 class AllowRule implements PreChainDirective {
 
+    public static final Logger LOGGER  = LoggerFactory.getLogger(AllowRule.class.getName());
+
     Set<IpSubnet> subnets = new HashSet<IpSubnet>();
 
     AllowRule(String hosts) {
@@ -80,7 +89,7 @@ class AllowRule implements PreChainDirective {
             try {
                 subnets.add(new IpSubnet(host));
             } catch (UnknownHostException ex) {
-                ex.printStackTrace();
+                LOGGER.error(ex.getMessage(), ex);
             }
         }
 
@@ -93,7 +102,7 @@ class AllowRule implements PreChainDirective {
                     return true;
                 }
             } catch (Exception ex) {
-                ex.printStackTrace();
+                LOGGER.error(ex.getMessage(), ex);
             }
         }
         return false;
@@ -107,7 +116,7 @@ class AllowRule implements PreChainDirective {
                 response.sendError(HttpServletResponse.SC_FORBIDDEN);
                 return IDirective.STOP;
             } catch (Exception ex) {
-                ex.printStackTrace();
+                LOGGER.error(ex.getMessage(), ex);
             }
         }
         return IDirective.OK;

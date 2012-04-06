@@ -271,16 +271,16 @@ public class ModulesFilter extends AbstractFilter {
                                     currentMapping.addModule(moduleName, module);
 
                                 } catch (ClassNotFoundException ex) {
-                                    ex.printStackTrace();
+                                    LOGGER.error(ex.getMessage(), ex);
                                 } catch (NoSuchMethodException ex) {
-                                    ex.printStackTrace();
+                                    LOGGER.error(ex.getMessage(), ex);
                                 } catch (IllegalAccessException ex) {
-                                    ex.printStackTrace();
+                                    LOGGER.error(ex.getMessage(), ex);
                                 } catch (InvocationTargetException ex) {
-                                    ex.printStackTrace();
+                                    LOGGER.error(ex.getMessage(), ex);
 
                                 } catch (InstantiationException ex) {
-                                    ex.printStackTrace();
+                                    LOGGER.error(ex.getMessage(), ex);
 
                                 }
                             }
@@ -296,7 +296,7 @@ public class ModulesFilter extends AbstractFilter {
                     }
 
                 } catch (IOException ex) {
-                    ex.printStackTrace();
+                    LOGGER.error(ex.getMessage(), ex);
                 }
             }
             return config;
