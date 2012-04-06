@@ -170,7 +170,7 @@ public class NewModulesFilter extends AbstractFilter {
             try {
                 ((ModuleResponse) moduleResponse).commit();
             } catch (Exception ex) {
-                ex.printStackTrace();
+                LOGGER.error(ex.getMessage(), ex);
             }
             return;
         }
@@ -198,7 +198,7 @@ public class NewModulesFilter extends AbstractFilter {
             try {
                 ((ModuleResponse) moduleResponse).commit();
             } catch (Exception ex) {
-                ex.printStackTrace();
+                LOGGER.error(ex.getMessage(), ex);
             }
         }
 
@@ -325,16 +325,16 @@ public class NewModulesFilter extends AbstractFilter {
                                 //currentMapping.addModule(handlerName, module);
 
                             } catch (ClassNotFoundException ex) {
-                                ex.printStackTrace();
+                                LOGGER.error(ex.getMessage(), ex);
                             } catch (NoSuchMethodException ex) {
-                                ex.printStackTrace();
+                                LOGGER.error(ex.getMessage(), ex);
                             } catch (IllegalAccessException ex) {
-                                ex.printStackTrace();
+                                LOGGER.error(ex.getMessage(), ex);
                             } catch (InvocationTargetException ex) {
-                                ex.printStackTrace();
+                                LOGGER.error(ex.getMessage(), ex);
 
                             } catch (InstantiationException ex) {
-                                ex.printStackTrace();
+                                LOGGER.error(ex.getMessage(), ex);
 
                             }
                             //}
@@ -353,7 +353,7 @@ public class NewModulesFilter extends AbstractFilter {
                     }
 
                 } catch (IOException ex) {
-                    ex.printStackTrace();
+                    LOGGER.error(ex.getMessage(), ex);
                 }
             }
             return config;

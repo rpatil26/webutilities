@@ -123,7 +123,7 @@ class YUICompressRulesPair extends DirectivePair {
                     }
                     return out.getBuffer().toString().getBytes();
                 } catch (Exception e) {
-                    e.printStackTrace();
+                    LOGGER.error(e.getMessage(), e);
                 }
                 return originalBytes;
             }
