@@ -243,13 +243,18 @@ public class ResponseCacheFilter extends AbstractFilter {
             LOGGER.trace("Cache not found or invalidated");
             WebUtilitiesResponseWrapper wrapper = new WebUtilitiesResponseWrapper(httpServletResponse);
             filterChain.doFilter(servletRequest, wrapper);
+            
+            //some filters return no status code, but we believe that it is "200 OK"
+			if (wrapper.getStatus() == 0) {
+				wrapper.setStatus(200);
+			}
 
             if (isMIMEAccepted(wrapper.getContentType()) && !expireCache && !resetCache && wrapper.getStatus() == 200) { //Cache only 200 status response
                 cache.put(url, new CacheObject(getLastModifiedFor(requestedResources, context), wrapper));
                 LOGGER.debug("Cache added for: {}", url);
             } else {
                 LOGGER.trace("Cache NOT added for: {}", url);
-                LOGGER.trace("is MIME not accepted: {}", isMIMEAccepted(wrapper.getContentType()));
+                LOGGER.trace("is MIME accepted: {}", isMIMEAccepted(wrapper.getContentType()));
                 LOGGER.trace("is expireCache: {}", expireCache);
                 LOGGER.trace("is resetCache: {}", resetCache);
             }
