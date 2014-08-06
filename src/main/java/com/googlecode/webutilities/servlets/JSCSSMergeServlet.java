@@ -274,16 +274,16 @@ public class JSCSSMergeServlet extends HttpServlet {
 
         if (resourcesNotFound > 0 && resourcesNotFound == resourcesToMerge.size()) { //all resources not found
             resp.setStatus(HttpServletResponse.SC_NOT_FOUND);
-			resp.sendRedirect(req.getContextPath()+"/error/errorPage.jsp");
+	    resp.sendRedirect(req.getContextPath()+"/error/errorPage.jsp");
             LOGGER.warn("All resources are not found. Sending 404.");
             return;
         }
         if (outputStream != null) {
             try {
                 if (extensionOrPath == null || (!EXT_JS.equals(extensionOrPath) && !req.getRequestURI().endsWith(".html"))) {					
-					//LOGGER.warn(extensionOrPath + "*******************************" + req.getRequestURI().endsWith(".html"));
-					resp.setStatus(HttpServletResponse.SC_OK);
-				}
+			//LOGGER.warn(extensionOrPath + "*******************************" + req.getRequestURI().endsWith(".html"));
+			resp.setStatus(HttpServletResponse.SC_OK);
+		}
                 outputStream.close();
             } catch (Exception e) {
                 // ignore
