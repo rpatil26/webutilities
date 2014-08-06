@@ -62,6 +62,7 @@ import static com.googlecode.webutilities.util.Utils.readLong;
 import static com.googlecode.webutilities.util.Utils.removeFingerPrint;
 import static com.googlecode.webutilities.util.Utils.selectMimeForExtension;
 import static com.googlecode.webutilities.util.Utils.updateReferenceMap;
+import static com.googlecode.webutilities.common.Constants.EXT_JS;
 
 
 /**
@@ -272,13 +273,17 @@ public class JSCSSMergeServlet extends HttpServlet {
         int resourcesNotFound = this.processResources(contextPathForCss, outputStream, resourcesToMerge);
 
         if (resourcesNotFound > 0 && resourcesNotFound == resourcesToMerge.size()) { //all resources not found
-            resp.sendError(HttpServletResponse.SC_NOT_FOUND);
+            resp.setStatus(HttpServletResponse.SC_NOT_FOUND);
+			resp.sendRedirect(req.getContextPath()+"/error/errorPage.jsp");
             LOGGER.warn("All resources are not found. Sending 404.");
             return;
         }
         if (outputStream != null) {
             try {
-                resp.setStatus(HttpServletResponse.SC_OK);
+                if (extensionOrPath == null || (!EXT_JS.equals(extensionOrPath) && !req.getRequestURI().endsWith(".html"))) {					
+					//LOGGER.warn(extensionOrPath + "*******************************" + req.getRequestURI().endsWith(".html"));
+					resp.setStatus(HttpServletResponse.SC_OK);
+				}
                 outputStream.close();
             } catch (Exception e) {
                 // ignore
