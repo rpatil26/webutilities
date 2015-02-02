@@ -25,6 +25,7 @@ import javax.servlet.http.HttpServletResponse;
 import javax.servlet.http.HttpServletResponseWrapper;
 import java.io.IOException;
 import java.io.PrintWriter;
+import java.io.Serializable;
 import java.util.HashMap;
 import java.util.HashSet;
 import java.util.Map;
@@ -47,7 +48,7 @@ public class WebUtilitiesResponseWrapper extends HttpServletResponseWrapper {
                     .getName());
 
     private WebUtilitiesResponseOutputStream stream;
-    private Map<String, Object> headers = new HashMap<String, Object>();
+    private Map<String, Serializable> headers = new HashMap<String, Serializable>();
     private Set<Cookie> cookies = new HashSet<Cookie>();
     private String contentType;
     private int status = 0;
@@ -149,7 +150,7 @@ public class WebUtilitiesResponseWrapper extends HttpServletResponseWrapper {
         return headers.containsKey(name);
     }
 
-    public Map<String, Object> getHeaders() {
+    public Map<String, Serializable> getHeaders() {
         return headers;
     }
 

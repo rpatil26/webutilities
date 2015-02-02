@@ -16,22 +16,24 @@
 
 package com.googlecode.webutilities.filters;
 
-import com.google.common.cache.Cache;
-import com.google.common.cache.CacheBuilder;
 import com.googlecode.webutilities.common.Constants;
 import com.googlecode.webutilities.common.WebUtilitiesResponseWrapper;
+import com.googlecode.webutilities.common.cache.Cache;
+import com.googlecode.webutilities.common.cache.CacheConfig;
+import com.googlecode.webutilities.common.cache.CacheFactory;
+import com.googlecode.webutilities.common.cache.CachedResponse;
 import com.googlecode.webutilities.filters.common.AbstractFilter;
 import com.googlecode.webutilities.servlets.JSCSSMergeServlet;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import javax.servlet.*;
+import javax.servlet.http.Cookie;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import java.io.IOException;
-import java.util.Date;
-import java.util.List;
-import java.util.concurrent.TimeUnit;
+import java.io.Serializable;
+import java.util.*;
 
 import static com.googlecode.webutilities.common.Constants.DEFAULT_CACHE_CONTROL;
 import static com.googlecode.webutilities.common.Constants.DEFAULT_EXPIRES_MINUTES;
@@ -86,53 +88,19 @@ public class ResponseCacheFilter extends AbstractFilter {
 
     public static enum CacheState {FOUND, NOT_FOUND, ADDED, SKIPPED};
 
-    private class CacheObject {
-
-        private long time;
-
-        //private long accessCount = 0;
-
-        private WebUtilitiesResponseWrapper webUtilitiesResponseWrapper;
-
-        CacheObject(long time, WebUtilitiesResponseWrapper webUtilitiesResponseWrapper) {
-            this.time = time;
-            this.webUtilitiesResponseWrapper = webUtilitiesResponseWrapper;
-        }
-
-        public long getTime() {
-            return time;
-        }
-
-        public WebUtilitiesResponseWrapper getWebUtilitiesResponseWrapper() {
-            return webUtilitiesResponseWrapper;
-        }
-
-        /*public void increaseAccessCount(){
-            accessCount++;
-        }
-
-        public long getAccessCount(){
-            return this.accessCount;
-        }*/
-
-    }
-
-    private static Cache<String, CacheObject> buildCache(/*int reloadAfterAccess, */int reloadAfterWrite) {
-        CacheBuilder<Object, Object> builder = CacheBuilder.newBuilder().softValues();
-        // if(reloadAfterAccess > 0)
-        //     builder.expireAfterAccess(reloadAfterAccess, TimeUnit.SECONDS);
-        if (reloadAfterWrite > 0)
-            builder.expireAfterWrite(reloadAfterWrite, TimeUnit.SECONDS);
-        return builder.build();
-    }
-
-    private Cache<String, CacheObject> cache;
+    private Cache<String, CachedResponse> cache;
 
     private int resetTime = 0;
 
     private long lastResetTime;
 
     private static final Logger LOGGER = LoggerFactory.getLogger(ResponseCacheFilter.class.getName());
+
+    private static final String INIT_PARAM_CACHE_PROVIDER = "cacheProvider"; //Enum value {DEFAULT, MEMCACHED, REDIS};
+
+    private static final String INIT_PARAM_CACHE_HOST = "cacheHost"; // Host for distributed cache
+
+    private static final String INIT_PARAM_CACHE_PORT = "cachePort"; //Port for distributed cache
 
     private static final String INIT_PARAM_RELOAD_TIME = "reloadTime";
 
@@ -148,15 +116,49 @@ public class ResponseCacheFilter extends AbstractFilter {
 
         lastResetTime = new Date().getTime();
 
-        if (cache == null) // fixme: checking for letting the unit test happy but nothing.
-            cache = buildCache(reloadTime);
+        CacheConfig<String, CachedResponse> cacheConfig = new CacheConfig<String, CachedResponse>();
 
-        LOGGER.debug("Cache Filter initialized with: {}:{},\n{}:{}",
+        String providerValue = readString(filterConfig.getInitParameter(INIT_PARAM_CACHE_PROVIDER), null);
+
+        if(providerValue != null)
+          cacheConfig.setProvider(CacheConfig.CacheProvider.valueOf(providerValue));
+
+        String cacheHost = filterConfig.getInitParameter(INIT_PARAM_CACHE_HOST);
+        cacheConfig.setHostname(cacheHost);
+        int cachePort = readInt(filterConfig.getInitParameter(INIT_PARAM_CACHE_PORT), 0);
+        cacheConfig.setPortNumber(cachePort);
+
+        if (!CacheFactory.isCacheProvider(cache, cacheConfig.getProvider())) {
+          try {
+            cache = CacheFactory.getCache(cacheConfig);
+          } catch (Exception ex) {
+            LOGGER.debug("Failed to initialize Cache Config: {}. Falling back to default Cache Service.", cacheConfig);
+            cache = CacheFactory.<String, CachedResponse>getDefaultCache();
+          }
+        }
+
+        LOGGER.debug("Cache Filter initialized with: " +
+                "{}:{},\n" +
+                "{}:{},\n" +
+                "{}:{},\n" +
+                "{}:{},\n" +
+                "{}:{}",
+                INIT_PARAM_CACHE_PROVIDER, providerValue,
+                INIT_PARAM_CACHE_HOST, cacheHost,
+                INIT_PARAM_CACHE_PORT, String.valueOf(cachePort),
                 INIT_PARAM_RELOAD_TIME, String.valueOf(reloadTime),
-                        INIT_PARAM_RESET_TIME, String.valueOf(resetTime));
+                INIT_PARAM_RESET_TIME, String.valueOf(resetTime));
     }
 
-    @Override
+    public Cache<String, CachedResponse> getCache() {
+      return cache;
+    }
+
+    public void setCache(Cache<String, CachedResponse> cache) {
+      this.cache = cache;
+    }
+
+  @Override
     public void doFilter(ServletRequest servletRequest, ServletResponse servletResponse, FilterChain filterChain) throws IOException, ServletException {
 
         HttpServletRequest httpServletRequest = (HttpServletRequest) servletRequest;
@@ -178,7 +180,7 @@ public class ResponseCacheFilter extends AbstractFilter {
 
         long now = new Date().getTime();
 
-        CacheObject cacheObject = cache.getIfPresent(url);
+      CachedResponse cachedResponse = cache.get(url);
 
         boolean expireCache = httpServletRequest.getParameter(Constants.PARAM_EXPIRE_CACHE) != null;
 
@@ -221,8 +223,8 @@ public class ResponseCacheFilter extends AbstractFilter {
 
         boolean cacheFound = false;
 
-        if (cacheObject != null && cacheObject.getWebUtilitiesResponseWrapper() != null) {
-            if (requestedResources != null && isAnyResourceModifiedSince(requestedResources, cacheObject.getTime(), context)) {
+        if (cachedResponse != null) {
+            if (requestedResources != null && isAnyResourceModifiedSince(requestedResources, cachedResponse.getTime(), context)) {
                 LOGGER.trace("Some resources have been modified since last cache: {}", url);
                 cache.invalidate(url);
                 cacheFound = false;
@@ -235,22 +237,20 @@ public class ResponseCacheFilter extends AbstractFilter {
 
         if (cacheFound) {
             LOGGER.debug("Returning Cached response.");
-            cacheObject.getWebUtilitiesResponseWrapper().fill(httpServletResponse);
+            cachedResponse.toResponse(httpServletResponse);
             httpServletResponse.setHeader(CACHE_HEADER, CacheState.FOUND.toString());
-            //fillResponseFromCache(httpServletResponse, cacheObject.getModuleResponse());
         } else {
             LOGGER.trace("Cache not found or invalidated");
             httpServletResponse.setHeader(CACHE_HEADER, CacheState.NOT_FOUND.toString());
             WebUtilitiesResponseWrapper wrapper = new WebUtilitiesResponseWrapper(httpServletResponse);
             filterChain.doFilter(servletRequest, wrapper);
 
-			// some filters return no status code, but we believe that it is "200 OK"
-			if (wrapper.getStatus() == 0) {
-				wrapper.setStatus(200);
-			}
-
+            // some filters return no status code, but we believe that it is "200 OK"
+            if (wrapper.getStatus() == 0) {
+              wrapper.setStatus(200);
+            }
             if (isMIMEAccepted(wrapper.getContentType()) && !expireCache && !resetCache && wrapper.getStatus() == 200) { //Cache only 200 status response
-                cache.put(url, new CacheObject(getLastModifiedFor(requestedResources, context), wrapper));
+                cache.put(url, new CachedResponse(getLastModifiedFor(requestedResources, context), wrapper));
                 LOGGER.debug("Cache added for: {}", url);
                 httpServletResponse.setHeader(CACHE_HEADER, CacheState.ADDED.toString());
             } else {
