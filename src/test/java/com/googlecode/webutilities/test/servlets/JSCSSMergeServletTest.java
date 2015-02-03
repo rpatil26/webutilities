@@ -54,7 +54,7 @@ public class JSCSSMergeServletTest extends AbstractServletTest {
     public void setupInitParams() {
         super.setupInitParams();
         String value = webMockObjectFactory.getMockServletConfig().getInitParameter(JSCSSMergeServlet.INIT_PARAM_EXPIRES_MINUTES);
-        if(value == null) {
+        if (value == null) {
             setupInitParam(JSCSSMergeServlet.INIT_PARAM_EXPIRES_MINUTES, expiresMinutes + ""); //one minute
         }
     }
@@ -63,11 +63,11 @@ public class JSCSSMergeServletTest extends AbstractServletTest {
         super.setupRequest();
 
         boolean removePreviousFilters = Utils.readBoolean(properties.getProperty(this.currentTestNumber + ".test.removePreviousFilters"), true);
-        if(removePreviousFilters){
+        if (removePreviousFilters) {
             filters.clear();
             servletTestModule.setDoChain(false);
-        }else{
-            for(Filter filter: filters){
+        } else {
+            for (Filter filter : filters) {
                 servletTestModule.addFilter(filter);
                 servletTestModule.setDoChain(true);
             }
@@ -75,17 +75,17 @@ public class JSCSSMergeServletTest extends AbstractServletTest {
         String filter = properties.getProperty(this.currentTestNumber + ".test.filter");
         if (filter != null && !filter.trim().equals("")) {
             String[] filtersString = filter.split(",");
-            for(String filterClass: filtersString){
+            for (String filterClass : filtersString) {
                 Class<?> clazz = null;
                 try {
                     clazz = Class.forName(filterClass);
                     Filter f = servletTestModule.createFilter(clazz);
-                    if(!filters.contains(f)){
+                    if (!filters.contains(f)) {
                         filters.add(f);
                         servletTestModule.setDoChain(true);
                     }
                 } catch (ClassNotFoundException e) {
-                     LOGGER.debug("Error: ", e);
+                    LOGGER.debug("Error: ", e);
                 }
             }
         }
@@ -111,7 +111,7 @@ public class JSCSSMergeServletTest extends AbstractServletTest {
 
         //!TODO test lastModified value
 
-        return (expiresMinutes - differenceInMilliseconds <= 5*1000); //ensure difference between last modified and expires is almost same (tolerate 5 sec)
+        return (expiresMinutes - differenceInMilliseconds <= 5 * 1000); //ensure difference between last modified and expires is almost same (tolerate 5 sec)
 
     }
 
@@ -125,21 +125,21 @@ public class JSCSSMergeServletTest extends AbstractServletTest {
 
         int expectedStatusCode = this.getExpectedStatus(NO_STATUS_CODE);
         int actualStatusCode = response.getStatusCode();
-        if(expectedStatusCode != NO_STATUS_CODE){
+        if (expectedStatusCode != NO_STATUS_CODE) {
             Assert.assertEquals(expectedStatusCode, actualStatusCode);
         }
-        Map<String,String> expectedHeaders = this.getExpectedHeaders();
-        for(String name :  expectedHeaders.keySet()){
+        Map<String, String> expectedHeaders = this.getExpectedHeaders();
+        for (String name : expectedHeaders.keySet()) {
             String value = expectedHeaders.get(name);
             Assert.assertEquals(value, response.getHeader(name));
         }
 
-        if(actualStatusCode != HttpServletResponse.SC_NOT_MODIFIED){
+        if (actualStatusCode != HttpServletResponse.SC_NOT_MODIFIED) {
             Assert.assertTrue(this.hasCorrectDateHeaders());
             String actualOutput = servletTestModule.getOutput();
             //!TODO for now hash is ignored bcoz it will differ based last modification time of the resource
             //!TODO need to consider and test actual generated hash
-            actualOutput = actualOutput.replaceAll("_wu_[0-9a-f]{32}\\.","_wu_<ignore_hash>.");
+            actualOutput = actualOutput.replaceAll("_wu_[0-9a-f]{32}\\.", "_wu_<ignore_hash>.");
 
             Assert.assertNotNull(actualOutput);
 

@@ -86,7 +86,7 @@ public class ResponseCacheFilter extends AbstractFilter {
 
     public static final String CACHE_HEADER = "X-ResponseCacheFilter";
 
-    public static enum CacheState {FOUND, NOT_FOUND, ADDED, SKIPPED};
+    public static enum CacheState {FOUND, NOT_FOUND, ADDED, SKIPPED}
 
     private Cache<String, CachedResponse> cache;
 
@@ -120,8 +120,8 @@ public class ResponseCacheFilter extends AbstractFilter {
 
         String providerValue = readString(filterConfig.getInitParameter(INIT_PARAM_CACHE_PROVIDER), null);
 
-        if(providerValue != null)
-          cacheConfig.setProvider(CacheConfig.CacheProvider.valueOf(providerValue));
+        if (providerValue != null)
+            cacheConfig.setProvider(CacheConfig.CacheProvider.valueOf(providerValue));
 
         String cacheHost = filterConfig.getInitParameter(INIT_PARAM_CACHE_HOST);
         cacheConfig.setHostname(cacheHost);
@@ -129,20 +129,20 @@ public class ResponseCacheFilter extends AbstractFilter {
         cacheConfig.setPortNumber(cachePort);
 
         if (!CacheFactory.isCacheProvider(cache, cacheConfig.getProvider())) {
-          try {
-            cache = CacheFactory.getCache(cacheConfig);
-          } catch (Exception ex) {
-            LOGGER.debug("Failed to initialize Cache Config: {}. Falling back to default Cache Service.", cacheConfig);
-            cache = CacheFactory.<String, CachedResponse>getDefaultCache();
-          }
+            try {
+                cache = CacheFactory.getCache(cacheConfig);
+            } catch (Exception ex) {
+                LOGGER.debug("Failed to initialize Cache Config: {}. Falling back to default Cache Service.", cacheConfig);
+                cache = CacheFactory.<String, CachedResponse>getDefaultCache();
+            }
         }
 
         LOGGER.debug("Cache Filter initialized with: " +
-                "{}:{},\n" +
-                "{}:{},\n" +
-                "{}:{},\n" +
-                "{}:{},\n" +
-                "{}:{}",
+                        "{}:{},\n" +
+                        "{}:{},\n" +
+                        "{}:{},\n" +
+                        "{}:{},\n" +
+                        "{}:{}",
                 INIT_PARAM_CACHE_PROVIDER, providerValue,
                 INIT_PARAM_CACHE_HOST, cacheHost,
                 INIT_PARAM_CACHE_PORT, String.valueOf(cachePort),
@@ -151,14 +151,14 @@ public class ResponseCacheFilter extends AbstractFilter {
     }
 
     public Cache<String, CachedResponse> getCache() {
-      return cache;
+        return cache;
     }
 
     public void setCache(Cache<String, CachedResponse> cache) {
-      this.cache = cache;
+        this.cache = cache;
     }
 
-  @Override
+    @Override
     public void doFilter(ServletRequest servletRequest, ServletResponse servletResponse, FilterChain filterChain) throws IOException, ServletException {
 
         HttpServletRequest httpServletRequest = (HttpServletRequest) servletRequest;
@@ -180,7 +180,7 @@ public class ResponseCacheFilter extends AbstractFilter {
 
         long now = new Date().getTime();
 
-      CachedResponse cachedResponse = cache.get(url);
+        CachedResponse cachedResponse = cache.get(url);
 
         boolean expireCache = httpServletRequest.getParameter(Constants.PARAM_EXPIRE_CACHE) != null;
 
@@ -247,7 +247,7 @@ public class ResponseCacheFilter extends AbstractFilter {
 
             // some filters return no status code, but we believe that it is "200 OK"
             if (wrapper.getStatus() == 0) {
-              wrapper.setStatus(200);
+                wrapper.setStatus(200);
             }
             if (isMIMEAccepted(wrapper.getContentType()) && !expireCache && !resetCache && wrapper.getStatus() == 200) { //Cache only 200 status response
                 cache.put(url, new CachedResponse(getLastModifiedFor(requestedResources, context), wrapper));
@@ -262,6 +262,12 @@ public class ResponseCacheFilter extends AbstractFilter {
             wrapper.fill(httpServletResponse);
         }
 
+    }
+
+    protected void invalidateCache() {
+        if (this.cache != null) {
+            this.cache.invalidateAll();
+        }
     }
 }
 

@@ -46,9 +46,9 @@ public class CompressedServletOutputStream extends ServletOutputStream {
     }
 
     private OutputStream getCompressed() throws IOException {
-    	if(useBuffer || cancelled){
-    		return uncompressedStream;
-    	}
+        if (useBuffer || cancelled) {
+            return uncompressedStream;
+        }
         if (compressed == null) {
             compressed = encodedStreamsFactory.getCompressedStream(uncompressedStream);
             //we are switching to compression here, write compression headers
@@ -162,9 +162,9 @@ public class CompressedServletOutputStream extends ServletOutputStream {
     }
 
     void cancelCompression() throws IOException {
-    	if(useBuffer){
-    		flushBufferToStream(uncompressedStream);
-    	}
+        if (useBuffer) {
+            flushBufferToStream(uncompressedStream);
+        }
         cancelled = true;
     }
 

@@ -175,9 +175,9 @@ public class YUIMinFilter extends AbstractFilter {
                 LOGGER.trace("Not minifying. Mime {} not allowed", mime);
                 return;
             }
-            byte [] bytes = wrapper.getBytes();
+            byte[] bytes = wrapper.getBytes();
 
-            if(bytes.length < 1) { //empty content. YUI Compressor fails on empty content https://github.com/yui/yuicompressor/issues/130
+            if (bytes.length < 1) { //empty content. YUI Compressor fails on empty content https://github.com/yui/yuicompressor/issues/130
                 out.write(wrapper.getContents());
                 out.flush();
                 LOGGER.trace("Not minifying empty content.");

@@ -19,7 +19,7 @@ package com.googlecode.webutilities.modules.infra;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletRequestWrapper;
 
-public class ModuleRequest extends HttpServletRequestWrapper{
+public class ModuleRequest extends HttpServletRequestWrapper {
 
     public ModuleRequest(HttpServletRequest request) {
         super(request);

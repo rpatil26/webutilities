@@ -108,7 +108,7 @@ public final class Constants {
 
     public static final String DATE_PATTERN_ANSI_C = "EEE MMM d HH:mm:ss yyyy";
 
-    public static final String DATE_PATTERN_HTTP_HEADER ="EEE, dd MMM yyyy HH:mm:ss zzz";
+    public static final String DATE_PATTERN_HTTP_HEADER = "EEE, dd MMM yyyy HH:mm:ss zzz";
 
     public static final String HEADER_X_OPTIMIZED_BY = "X-Optimized-By";
 

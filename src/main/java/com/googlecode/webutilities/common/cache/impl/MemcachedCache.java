@@ -40,25 +40,25 @@ public class MemcachedCache<K, V> implements Cache<K, V> {
     @Override
     public void put(K key, V value) {
         int reloadTime = cacheConfig.getReloadTime();
-        if (reloadTime > 0){
+        if (reloadTime > 0) {
             client.set(key.toString(), reloadTime, value);
         } else {
-          client.set(key.toString(), 3600, value);
+            client.set(key.toString(), 3600, value);
         }
     }
 
     @Override
     public V get(K key) {
-      return (V)client.get(key.toString());
+        return (V) client.get(key.toString());
     }
 
     @Override
     public void invalidate(K key) {
-      client.delete(key.toString());
+        client.delete(key.toString());
     }
 
     @Override
     public void invalidateAll() {
-      client.flush();
+        client.flush();
     }
 }

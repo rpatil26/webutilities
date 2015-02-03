@@ -79,7 +79,7 @@ import static com.googlecode.webutilities.common.Constants.*;
  * <p><b>jsp-api.jar</b> - Must be already present in your webapp classpath</p>
  * <p><b>yuicompressor-x.y.z.jar</b> - Download and put appropriate version of this jar in your classpath (in WEB-INF/lib)</p>
  * <p/>
- *
+ * <p/>
  * Visit http://code.google.com/p/webutilities/wiki/YUIMinTag for more details.
  *
  * @author rpatil
@@ -107,15 +107,15 @@ public class YUIMinTag extends BodyTagSupport {
         this.type = type;
     }
 
-	public void setCharset(String charset) {
+    public void setCharset(String charset) {
         this.charset = charset;
 
-        if(!Charset.isSupported(this.charset)){
-            LOGGER.warn("Charset {} not supported. Using default : " , this.charset, DEFAULT_CHARSET);
+        if (!Charset.isSupported(this.charset)) {
+            LOGGER.warn("Charset {} not supported. Using default : ", this.charset, DEFAULT_CHARSET);
             this.charset = DEFAULT_CHARSET;
         }
 
-	}
+    }
 
     public void setLineBreak(int lineBreak) {
         this.lineBreak = lineBreak;
@@ -137,9 +137,9 @@ public class YUIMinTag extends BodyTagSupport {
     public int doAfterBody() throws JspException {
         BodyContent content = getBodyContent();
         String stringContent;
-        try{
-            stringContent = new String(content.getString().getBytes(),charset);
-        }catch (UnsupportedEncodingException ex){
+        try {
+            stringContent = new String(content.getString().getBytes(), charset);
+        } catch (UnsupportedEncodingException ex) {
             stringContent = content.getString();
             LOGGER.warn("Failed to parse contents using charset: {}", charset);
         }
@@ -148,7 +148,7 @@ public class YUIMinTag extends BodyTagSupport {
         try {
             if (TYPE_JS.equals(type.toLowerCase())) {
                 JavaScriptCompressor compressor = new JavaScriptCompressor(stringReader, null);
-                LOGGER.trace("Compressing {}",  TYPE_JS);
+                LOGGER.trace("Compressing {}", TYPE_JS);
                 compressor.compress(jspWriter, this.lineBreak, !this.noMunge, false, this.preserveSemi, this.disableOptimizations);
             } else if (TYPE_CSS.equals(type.toLowerCase())) {
                 CssCompressor compressor = new CssCompressor(stringReader);
@@ -156,7 +156,7 @@ public class YUIMinTag extends BodyTagSupport {
                 compressor.compress(jspWriter, this.lineBreak);
             }
         } catch (Exception e) {
-            LOGGER.error("Exception in YUIMinTag: ",  e);
+            LOGGER.error("Exception in YUIMinTag: ", e);
             return EVAL_BODY_INCLUDE;
         }
         return SKIP_BODY;

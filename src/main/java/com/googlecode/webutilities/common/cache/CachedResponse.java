@@ -26,77 +26,77 @@ import java.util.*;
 
 public class CachedResponse implements Serializable {
 
-  static final long serialVersionUID = 1L;
+    static final long serialVersionUID = 1L;
 
-  private Map<String, Serializable> headers = new HashMap<String, Serializable>();
+    private Map<String, Serializable> headers = new HashMap<String, Serializable>();
 
-  private Set<Cookie> cookies = new HashSet<Cookie>();
+    private Set<Cookie> cookies = new HashSet<Cookie>();
 
-  private int status = 0;
+    private int status = 0;
 
-  private byte[] data;
+    private byte[] data;
 
-  private String encoding;
+    private String encoding;
 
-  private String contentType;
+    private String contentType;
 
-  private Locale locale;
+    private Locale locale;
 
-  private long time;
+    private long time;
 
-  public CachedResponse(long time, WebUtilitiesResponseWrapper response) {
-    this.time = time;
-    this.fromResponse(response);
-  }
-
-  public void fromResponse(WebUtilitiesResponseWrapper response) {
-    this.cookies = response.getCookies();
-    this.headers = response.getHeaders();
-    this.status = response.getStatus();
-    this.data = response.getBytes();
-    this.encoding = response.getCharacterEncoding();
-    this.contentType = response.getContentType();
-    this.locale = response.getLocale();
-  }
-
-  public long getTime() {
-    return time;
-  }
-
-  public void toResponse(HttpServletResponse response) {
-
-    for (Cookie cookie : this.cookies) {
-      response.addCookie(cookie);
-    }
-    for (String headerName : this.headers.keySet()) {
-      Object value = this.headers.get(headerName);
-      if (value instanceof Long) {
-        response.setDateHeader(headerName, ((Long) value));
-      } else if (value instanceof Integer) {
-        response.setIntHeader(headerName, ((Integer) value));
-      } else {
-        response.setHeader(headerName, value.toString());
-      }
+    public CachedResponse(long time, WebUtilitiesResponseWrapper response) {
+        this.time = time;
+        this.fromResponse(response);
     }
 
-    response.setCharacterEncoding(this.encoding);
-    response.setContentType(this.contentType);
-    response.setLocale(this.locale);
-
-    if (this.status > 0)
-      response.setStatus(this.status);
-
-    try {
-      response.getOutputStream().write(this.data);
-      response.getOutputStream().close();
-    } catch (IOException ex) {
-      try {
-        response.getWriter().write(new String(this.data));
-        response.getWriter().close();
-      } catch (Exception ex1) {
-        //LOGGER.error(ex1.getMessage(), ex1);
-      }
-      //   ex.printStackTrace();
+    public void fromResponse(WebUtilitiesResponseWrapper response) {
+        this.cookies = response.getCookies();
+        this.headers = response.getHeaders();
+        this.status = response.getStatus();
+        this.data = response.getBytes();
+        this.encoding = response.getCharacterEncoding();
+        this.contentType = response.getContentType();
+        this.locale = response.getLocale();
     }
-  }
+
+    public long getTime() {
+        return time;
+    }
+
+    public void toResponse(HttpServletResponse response) {
+
+        for (Cookie cookie : this.cookies) {
+            response.addCookie(cookie);
+        }
+        for (String headerName : this.headers.keySet()) {
+            Object value = this.headers.get(headerName);
+            if (value instanceof Long) {
+                response.setDateHeader(headerName, ((Long) value));
+            } else if (value instanceof Integer) {
+                response.setIntHeader(headerName, ((Integer) value));
+            } else {
+                response.setHeader(headerName, value.toString());
+            }
+        }
+
+        response.setCharacterEncoding(this.encoding);
+        response.setContentType(this.contentType);
+        response.setLocale(this.locale);
+
+        if (this.status > 0)
+            response.setStatus(this.status);
+
+        try {
+            response.getOutputStream().write(this.data);
+            response.getOutputStream().close();
+        } catch (IOException ex) {
+            try {
+                response.getWriter().write(new String(this.data));
+                response.getWriter().close();
+            } catch (Exception ex1) {
+                //LOGGER.error(ex1.getMessage(), ex1);
+            }
+            //   ex.printStackTrace();
+        }
+    }
 }

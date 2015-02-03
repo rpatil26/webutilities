@@ -16,7 +16,7 @@
 
 package com.googlecode.webutilities.modules.ne;
 
-public class GClosure implements IModule{
+public class GClosure implements IModule {
 
 
     @Override

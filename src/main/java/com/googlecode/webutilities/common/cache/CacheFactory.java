@@ -27,23 +27,29 @@ import java.io.IOException;
  */
 public class CacheFactory {
 
-  public static <K, V> Cache getDefaultCache() {
-    return new GoogleCache<K, V>(new CacheConfig<K, V>());
-  }
-
-  public static <K, V> Cache<K, V> getCache(CacheConfig<K, V> config) throws IOException {
-    if (CacheConfig.CacheProvider.MEMCACHED.equals(config.getProvider())) {
-      return new MemcachedCache<K, V>(config);
-    } else if (CacheConfig.CacheProvider.REDIS.equals(config.getProvider())) {
-      return new RedisCache<K, V>(config);
-    } else {
-      return new GoogleCache<K, V>(new CacheConfig<K, V>());
+    public static <K, V> Cache getDefaultCache() {
+        return new GoogleCache<K, V>(new CacheConfig<K, V>());
     }
-  }
-  public static boolean isCacheProvider (Cache cache, CacheConfig.CacheProvider provider) {
-    return cache != null && provider != null && (CacheConfig.CacheProvider.MEMCACHED.equals(provider) && cache instanceof MemcachedCache
-        || CacheConfig.CacheProvider.REDIS.equals(provider) && cache instanceof RedisCache
-        || CacheConfig.CacheProvider.DEFAULT.equals(provider) && cache instanceof GoogleCache);
-  }
+
+    public static <K, V> Cache<K, V> getCache(CacheConfig<K, V> config) throws IOException {
+        if (CacheConfig.CacheProvider.MEMCACHED.equals(config.getProvider())) {
+            return new MemcachedCache<K, V>(config);
+        } else if (CacheConfig.CacheProvider.REDIS.equals(config.getProvider())) {
+            return new RedisCache<K, V>(config);
+        } else {
+            return new GoogleCache<K, V>(new CacheConfig<K, V>());
+        }
+    }
+
+    public static boolean isCacheProvider(Cache cache, CacheConfig.CacheProvider provider) {
+        return cache != null
+                && provider != null
+                && (CacheConfig.CacheProvider.MEMCACHED.equals(provider)
+                    && cache instanceof MemcachedCache
+                    || CacheConfig.CacheProvider.REDIS.equals(provider)
+                    && cache instanceof RedisCache
+                    || CacheConfig.CacheProvider.DEFAULT.equals(provider)
+                    && cache instanceof GoogleCache);
+    }
 }
 

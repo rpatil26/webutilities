@@ -80,9 +80,9 @@ public class ModulesFilter extends AbstractFilter {
                     break;
                 }
             }
-            if (IRule.Status.NO_CHAIN != status ){
+            if (IRule.Status.NO_CHAIN != status) {
                 status = process(iterator, moduleRequest, moduleResponse, chain);
-                if(status != IRule.Status.CONTINUE){
+                if (status != IRule.Status.CONTINUE) {
                     return status;
                 }
             }
@@ -156,14 +156,14 @@ public class ModulesFilter extends AbstractFilter {
 
     public static void main(String[] args) {
         Config config = Config.load();
-        LOGGER.debug("Rule mappings count:{}",config.getRuleMappings().size());
+        LOGGER.debug("Rule mappings count:{}", config.getRuleMappings().size());
     }
 
     /**
      * Class that holds the configuration details. It parses and loads the modules their rules from
      * modules.conf file. Default load API without any param uses the default modules.conf file
      * bundled with the jar.
-     *
+     * <p/>
      * Default modules.conf has default standard optimization rules for JS, CSS, Images. Refer default
      * modules.conf file for more details.
      */
@@ -258,9 +258,9 @@ public class ModulesFilter extends AbstractFilter {
                             ignoreQSPattern = extractRegExFor(line, "ignoreQS");
 
                             currentMapping = new RuleMapping(ignoreURLPattern, acceptURLPattern,
-                                ignoreMIMEPattern, acceptMIMEPattern,
-                                ignoreUAPattern, acceptUAPattern,
-                                ignoreQSPattern, acceptQSPattern);
+                                    ignoreMIMEPattern, acceptMIMEPattern,
+                                    ignoreUAPattern, acceptUAPattern,
+                                    ignoreQSPattern, acceptQSPattern);
 
                             continue;
                         }
@@ -388,7 +388,7 @@ public class ModulesFilter extends AbstractFilter {
         }
 
 
-      public IModule getModule(String name) {
+        public IModule getModule(String name) {
             return modules.get(name);
         }
 

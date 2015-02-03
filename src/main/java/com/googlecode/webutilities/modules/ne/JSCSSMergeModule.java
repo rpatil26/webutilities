@@ -151,8 +151,8 @@ class JSCSSMergeDirective implements PreChainDirective {
     }
 
     /**
-     * @param request - HttpServletRequest
-     * @param response - HttpServletResponse
+     * @param request          - HttpServletRequest
+     * @param response         - HttpServletResponse
      * @param resourcesToMerge - List of resources relative paths
      * @return true if not modified based on if-None-Match and If-Modified-Since
      */
@@ -171,7 +171,7 @@ class JSCSSMergeDirective implements PreChainDirective {
         //If-None-match
         String requestETag = request.getHeader(HTTP_IF_NONE_MATCH_HEADER);
         String actualETag = Utils.buildETagForResources(resourcesToMerge, context);
-        if ( !Utils.isAnyResourceETagModified(resourcesToMerge, requestETag, actualETag, context)) {
+        if (!Utils.isAnyResourceETagModified(resourcesToMerge, requestETag, actualETag, context)) {
             return new ResourceStatus(actualETag, true);
         }
         return new ResourceStatus(actualETag, false);
@@ -214,7 +214,7 @@ class JSCSSMergeDirective implements PreChainDirective {
                 }
             } catch (IOException e) {
                 LOGGER.error("Error while reading resource : {}", resourcePath);
-                LOGGER.error("IOException :",  e);
+                LOGGER.error("IOException :", e);
             }
 
             if (is != null) {
@@ -226,7 +226,7 @@ class JSCSSMergeDirective implements PreChainDirective {
                 try {
                     outputStream.flush();
                 } catch (IOException ex) {
-                    LOGGER.error("Failed to flush out:{}",  outputStream);
+                    LOGGER.error("Failed to flush out:{}", outputStream);
                 }
             }
 
@@ -235,9 +235,9 @@ class JSCSSMergeDirective implements PreChainDirective {
     }
 
     /**
-     * @param cssFilePath - path of the cssFile
-     * @param contextPath - web app context path or custom context path
-     * @param inputStream - input stream
+     * @param cssFilePath  - path of the cssFile
+     * @param contextPath  - web app context path or custom context path
+     * @param inputStream  - input stream
      * @param outputStream - output stream
      * @throws java.io.IOException - throws exception in case something woes wrong (IO read/write)
      */
@@ -254,10 +254,10 @@ class JSCSSMergeDirective implements PreChainDirective {
     }
 
     /**
-     * @param context - ServletContext
+     * @param context     - ServletContext
      * @param contextPath - context path or custom configured context path
      * @param cssFilePath - css file path
-     * @param line - one single line in a css file
+     * @param line        - one single line in a css file
      * @return processed string with appropriate replacement of image URLs if any
      */
     private String processCSSLine(ServletContext context, String contextPath, String cssFilePath, StringBuffer line) {
@@ -294,7 +294,7 @@ class JSCSSMergeDirective implements PreChainDirective {
     private void addAppropriateResponseHeaders(String extensionOrFile, List<String> resourcesToMerge, String hashForETag, HttpServletResponse resp) {
         String mime = Utils.selectMimeForExtension(extensionOrFile);
         if (mime != null) {
-            LOGGER.trace("Setting MIME to ",  mime);
+            LOGGER.trace("Setting MIME to ", mime);
             resp.setContentType(mime);
         }
         if (hashForETag != null) {

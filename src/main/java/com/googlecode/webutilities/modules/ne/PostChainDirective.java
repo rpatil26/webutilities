@@ -16,6 +16,6 @@
 
 package com.googlecode.webutilities.modules.ne;
 
-public interface PostChainDirective extends IDirective{
+public interface PostChainDirective extends IDirective {
 
 }

@@ -26,19 +26,19 @@ import org.slf4j.LoggerFactory;
 import javax.servlet.http.HttpServletResponse;
 import java.util.Map;
 
-public class ResponseCacheFilterTest extends AbstractFilterTest {
+public class RedisResponseCacheFilterTest extends AbstractFilterTest {
 
     private JSCSSMergeServlet jscssMergeServlet = new JSCSSMergeServlet();
 
-    private ResponseCacheFilter responseCacheFilter = new ResponseCacheFilter();
+    private ResponseCacheFilter responseCacheFilter = new ExtendedMockResponseCacheFilter();
 
-    protected final Logger LOGGER = LoggerFactory.getLogger(ResponseCacheFilterTest.class.getName());
+    private static final Logger LOGGER = LoggerFactory.getLogger(RedisResponseCacheFilterTest.class.getName());
 
     private static final int NO_STATUS_CODE = -99999;
 
     @Override
     protected String getTestPropertiesName() {
-        return ResponseCacheFilterTest.class.getSimpleName() + ".properties";
+        return RedisResponseCacheFilterTest.class.getSimpleName() + ".properties";
     }
 
     @Override
@@ -58,6 +58,7 @@ public class ResponseCacheFilterTest extends AbstractFilterTest {
         }
         return expectedHeaders;
     }
+
     public void executeCurrentTestLogic() throws Exception {
 
         servletTestModule.doFilter();

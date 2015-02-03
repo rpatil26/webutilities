@@ -27,34 +27,34 @@ import java.util.concurrent.TimeUnit;
  */
 public class GoogleCache<K, V> implements Cache<K, V> {
 
-  private com.google.common.cache.Cache<K, V> googleCache;
+    private com.google.common.cache.Cache<K, V> googleCache;
 
-  public GoogleCache(CacheConfig<K, V> cacheConfig) {
-    CacheBuilder<Object, Object> builder = CacheBuilder.newBuilder().softValues();
-    // if(reloadAfterAccess > 0)
-    //     builder.expireAfterAccess(reloadAfterAccess, TimeUnit.SECONDS);
-    if (cacheConfig.getReloadTime() > 0)
-      builder.expireAfterWrite(cacheConfig.getReloadTime(), TimeUnit.SECONDS);
-    googleCache = builder.build();
-  }
+    public GoogleCache(CacheConfig<K, V> cacheConfig) {
+        CacheBuilder<Object, Object> builder = CacheBuilder.newBuilder().softValues();
+        // if(reloadAfterAccess > 0)
+        //     builder.expireAfterAccess(reloadAfterAccess, TimeUnit.SECONDS);
+        if (cacheConfig.getReloadTime() > 0)
+            builder.expireAfterWrite(cacheConfig.getReloadTime(), TimeUnit.SECONDS);
+        googleCache = builder.build();
+    }
 
-  @Override
-  public void put(K key, V value) {
-    googleCache.put(key, value);
-  }
+    @Override
+    public void put(K key, V value) {
+        googleCache.put(key, value);
+    }
 
-  @Override
-  public V get(K key) {
-    return googleCache.getIfPresent(key);
-  }
+    @Override
+    public V get(K key) {
+        return googleCache.getIfPresent(key);
+    }
 
-  @Override
-  public void invalidate(K key) {
-    googleCache.invalidate(key);
-  }
+    @Override
+    public void invalidate(K key) {
+        googleCache.invalidate(key);
+    }
 
-  @Override
-  public void invalidateAll() {
-    googleCache.invalidateAll();
-  }
+    @Override
+    public void invalidateAll() {
+        googleCache.invalidateAll();
+    }
 }

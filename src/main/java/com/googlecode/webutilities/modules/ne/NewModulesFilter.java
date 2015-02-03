@@ -210,7 +210,7 @@ public class NewModulesFilter extends AbstractFilter {
 
     public static void main(String[] args) {
         Config config = Config.load();
-        LOGGER.debug("Rule mappings count:{}",config.getRuleMappings().size());
+        LOGGER.debug("Rule mappings count:{}", config.getRuleMappings().size());
     }
 
     /**
@@ -312,9 +312,9 @@ public class NewModulesFilter extends AbstractFilter {
                             ignoreQSPattern = extractRegExFor(line, "ignoreQS");
 
                             currentMapping = new RulesMapping(ignoreURLPattern, acceptURLPattern,
-                                ignoreMIMEPattern, acceptMIMEPattern,
-                                ignoreUAPattern, acceptUAPattern,
-                                ignoreQSPattern, acceptQSPattern);
+                                    ignoreMIMEPattern, acceptMIMEPattern,
+                                    ignoreUAPattern, acceptUAPattern,
+                                    ignoreQSPattern, acceptQSPattern);
 
                             continue;
                         }

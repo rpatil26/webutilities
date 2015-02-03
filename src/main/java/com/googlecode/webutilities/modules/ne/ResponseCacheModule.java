@@ -160,7 +160,7 @@ class CheckCacheDirective implements PreChainDirective {
                 cacheObject.getModuleResponse().fill(response);
                 return STOP_CHAIN;
             } catch (Exception ex) {
-				LOGGER.error(ex.getMessage(), ex);
+                LOGGER.error(ex.getMessage(), ex);
 
             }
         }

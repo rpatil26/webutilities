@@ -21,88 +21,88 @@ package com.googlecode.webutilities.common.cache;
  */
 public class CacheConfig<K, V> {
 
-  public static enum CacheProvider {DEFAULT, MEMCACHED, REDIS};
+    public static enum CacheProvider {DEFAULT, MEMCACHED, REDIS}
 
-  private CacheProvider provider;
+    private CacheProvider provider;
 
-  private String hostname;
+    private String hostname;
 
-  private int portNumber;
+    private int portNumber;
 
-  private int reloadTime;
+    private int reloadTime;
 
-  private int resetTime;
+    private int resetTime;
 
-  public CacheConfig() {
-    this.provider = CacheProvider.DEFAULT;
-  }
+    public CacheConfig() {
+        this.provider = CacheProvider.DEFAULT;
+    }
 
-  public CacheConfig(CacheProvider provider) {
-    this.provider = provider;
-  }
+    public CacheConfig(CacheProvider provider) {
+        this.provider = provider;
+    }
 
-  public CacheConfig(CacheProvider provider, int reloadTime, int resetTime) {
-    this.provider = provider;
-    this.reloadTime = reloadTime;
-    this.resetTime = resetTime;
-  }
+    public CacheConfig(CacheProvider provider, int reloadTime, int resetTime) {
+        this.provider = provider;
+        this.reloadTime = reloadTime;
+        this.resetTime = resetTime;
+    }
 
-  public CacheConfig(CacheProvider provider, String hostname, int portNumber, int reloadTime, int resetTime) {
-    this.provider = provider;
-    this.hostname = hostname;
-    this.portNumber = portNumber;
-    this.reloadTime = reloadTime;
-    this.resetTime = resetTime;
-  }
+    public CacheConfig(CacheProvider provider, String hostname, int portNumber, int reloadTime, int resetTime) {
+        this.provider = provider;
+        this.hostname = hostname;
+        this.portNumber = portNumber;
+        this.reloadTime = reloadTime;
+        this.resetTime = resetTime;
+    }
 
-  public CacheProvider getProvider() {
-    return provider;
-  }
+    public CacheProvider getProvider() {
+        return provider;
+    }
 
-  public void setProvider(CacheProvider provider) {
-    this.provider = provider;
-  }
+    public void setProvider(CacheProvider provider) {
+        this.provider = provider;
+    }
 
-  public String getHostname() {
-    return hostname;
-  }
+    public String getHostname() {
+        return hostname;
+    }
 
-  public void setHostname(String hostname) {
-    this.hostname = hostname;
-  }
+    public void setHostname(String hostname) {
+        this.hostname = hostname;
+    }
 
-  public int getPortNumber() {
-    return portNumber;
-  }
+    public int getPortNumber() {
+        return portNumber;
+    }
 
-  public void setPortNumber(int portNumber) {
-    this.portNumber = portNumber;
-  }
+    public void setPortNumber(int portNumber) {
+        this.portNumber = portNumber;
+    }
 
-  public int getReloadTime() {
-    return reloadTime;
-  }
+    public int getReloadTime() {
+        return reloadTime;
+    }
 
-  public void setReloadTime(int reloadTime) {
-    this.reloadTime = reloadTime;
-  }
+    public void setReloadTime(int reloadTime) {
+        this.reloadTime = reloadTime;
+    }
 
-  public int getResetTime() {
-    return resetTime;
-  }
+    public int getResetTime() {
+        return resetTime;
+    }
 
-  public void setResetTime(int resetTime) {
-    this.resetTime = resetTime;
-  }
+    public void setResetTime(int resetTime) {
+        this.resetTime = resetTime;
+    }
 
-  @Override
-  public String toString() {
-    return "CacheConfig{" +
-        "provider=" + provider +
-        ", hostname='" + hostname + '\'' +
-        ", portNumber=" + portNumber +
-        ", reloadTime=" + reloadTime +
-        ", resetTime=" + resetTime +
-        '}';
-  }
+    @Override
+    public String toString() {
+        return "CacheConfig{" +
+                "provider=" + provider +
+                ", hostname='" + hostname + '\'' +
+                ", portNumber=" + portNumber +
+                ", reloadTime=" + reloadTime +
+                ", resetTime=" + resetTime +
+                '}';
+    }
 }

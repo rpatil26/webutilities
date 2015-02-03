@@ -106,8 +106,8 @@ public class CompressedHttpServletResponseWrapper extends WebUtilitiesResponseWr
         getWriterCalled = true;
         if (printWriter == null) {
             printWriter = new PrintWriter(new OutputStreamWriter(getCompressedServletOutputStream(),
-                getCharacterEncoding()),
-                true);
+                    getCharacterEncoding()),
+                    true);
         }
         return printWriter;
     }
@@ -308,8 +308,8 @@ public class CompressedHttpServletResponseWrapper extends WebUtilitiesResponseWr
     private void setCompressionResponseHeaders() {
         httpResponse.addHeader(HTTP_VARY_HEADER, HTTP_ACCEPT_ENCODING_HEADER);
         String fullContentEncodingHeader = savedContentEncoding == null ?
-            compressedContentEncoding :
-            savedContentEncoding + ',' + compressedContentEncoding;
+                compressedContentEncoding :
+                savedContentEncoding + ',' + compressedContentEncoding;
         httpResponse.setHeader(HTTP_CONTENT_ENCODING_HEADER, fullContentEncodingHeader);
         setETagHeader();
     }
@@ -353,9 +353,9 @@ public class CompressedHttpServletResponseWrapper extends WebUtilitiesResponseWr
     private CompressedServletOutputStream getCompressedServletOutputStream() throws IOException {
         if (compressingStream == null) {
             compressingStream =
-                new CompressedServletOutputStream(httpResponse.getOutputStream(),
-                    encodedStreamsFactory,
-                    this, threshold);
+                    new CompressedServletOutputStream(httpResponse.getOutputStream(),
+                            encodedStreamsFactory,
+                            this, threshold);
         }
 
         if (!compressingStream.isClosed()) {

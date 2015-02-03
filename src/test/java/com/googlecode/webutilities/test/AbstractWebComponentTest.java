@@ -79,8 +79,8 @@ public abstract class AbstractWebComponentTest {
         webMockObjectFactory.getMockRequest().setupAddParameter(name, value);
     }
 
-    public void setupInitParams() {
-        String value = properties.getProperty(this.currentTestNumber + ".test.init.params");
+    private void setupInitParamsFromKey(String key) {
+        String value = properties.getProperty(key);
         if (value != null && !value.trim().equals("")) {
             String[] params = value.split(",");
             for (String param : params) {
@@ -88,6 +88,11 @@ public abstract class AbstractWebComponentTest {
                 setupInitParam(keyAndValue[0], keyAndValue[1]);
             }
         }
+    }
+
+    public void setupInitParams() {
+        this.setupInitParamsFromKey("test.init.params");
+        this.setupInitParamsFromKey(this.currentTestNumber + ".test.init.params");
     }
 
     public void setupResources() {
@@ -212,6 +217,7 @@ public abstract class AbstractWebComponentTest {
     @Test
     public void testAllDefinedScenarios() throws Exception {
 
+        LOGGER.info("\t######  TESTING : {}", this.getTestPropertiesName().split("\\.")[0]);
         while (true) {
             this.pre();
 
@@ -222,15 +228,8 @@ public abstract class AbstractWebComponentTest {
                 //return; // no more test cases in properties file.
             }
 
-            LOGGER.info("##################################################################################################################");
-            LOGGER.debug("Test {} : {}", this.currentTestNumber, testCase);
-
-
             this.executeCurrentTestLogic();
-
-
-            LOGGER.info("Test {} : PASS. {}", this.currentTestNumber, testCase);
-            LOGGER.info("##################################################################################################################");
+            LOGGER.info("\t\t# Test {} : PASS. {}", this.currentTestNumber, testCase);
 
             this.post();
 

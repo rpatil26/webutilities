@@ -46,9 +46,9 @@ public interface IgnoreAcceptContext {
     boolean isUserAgentAccepted(String userAgent);
 
     /**
-    * @param queryString - query string (request parameters string)
-    * @return isAccepted - true if request matching query string has to be processed/filtered.
-    */
+     * @param queryString - query string (request parameters string)
+     * @return isAccepted - true if request matching query string has to be processed/filtered.
+     */
 
     boolean isQueryStringAccepted(String queryString);
 

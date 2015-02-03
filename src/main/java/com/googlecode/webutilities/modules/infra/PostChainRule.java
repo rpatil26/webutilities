@@ -16,6 +16,6 @@
 
 package com.googlecode.webutilities.modules.infra;
 
-public interface PostChainRule extends IRule{
+public interface PostChainRule extends IRule {
 
 }

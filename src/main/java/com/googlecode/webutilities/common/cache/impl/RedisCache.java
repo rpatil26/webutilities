@@ -27,96 +27,97 @@ import java.io.*;
  */
 public class RedisCache<K, V> implements Cache<K, V> {
 
-  private Jedis jedis;
-  CacheConfig<K, V> cacheConfig;
+    private Jedis jedis;
+    CacheConfig<K, V> cacheConfig;
 
-  public RedisCache(CacheConfig<K, V> config) {
-    this.cacheConfig = config;
-    jedis = new Jedis(config.getHostname(), config.getPortNumber());
-    jedis.connect();
-  }
+    public RedisCache(CacheConfig<K, V> config) {
+        this.cacheConfig = config;
+        jedis = new Jedis(config.getHostname(), config.getPortNumber());
+        jedis.connect();
+    }
 
-  private byte[] toBytes(Object value) {
-      ByteArrayOutputStream bos = new ByteArrayOutputStream();
-      ObjectOutput out = null;
-      byte[] result = new byte[0];
-      try {
-          out = new ObjectOutputStream(bos);
-          out.writeObject(value);
-          result = bos.toByteArray();
-      } catch (Exception e) {
-          e.printStackTrace();
-          //log error
-      } finally {
-          try {
-              if (out != null) {
-                  out.close();
-              }
-          } catch (IOException ex) {
-              // ignore close exception
-          }
-          try {
-              bos.close();
-          } catch (IOException ex) {
-            // ignore close exception
-          }
-      }
-      return result;
-  }
-
-  public Object toObject(byte [] bytes) {
-    if (bytes==null || bytes.length < 1) return null;
-
-    ByteArrayInputStream bis = new ByteArrayInputStream(bytes);
-
-    ObjectInput in = null;
-    Object result = null;
-
-    try {
-      in = new ObjectInputStream(bis);
-      result = in.readObject();
-    } catch (IOException e) {
-      //Log error
-    } catch (ClassNotFoundException e) {
-      //Log error
-    } finally {
-      try {
-        bis.close();
-      } catch (IOException ex) {
-        // ignore close exception
-      }
-      try {
-        if (in != null) {
-          in.close();
+    private byte[] toBytes(Object value) {
+        ByteArrayOutputStream bos = new ByteArrayOutputStream();
+        ObjectOutput out = null;
+        byte[] result = new byte[0];
+        try {
+            out = new ObjectOutputStream(bos);
+            out.writeObject(value);
+            result = bos.toByteArray();
+        } catch (Exception e) {
+            e.printStackTrace();
+            //log error
+        } finally {
+            try {
+                if (out != null) {
+                    out.close();
+                }
+            } catch (IOException ex) {
+                // ignore close exception
+            }
+            try {
+                bos.close();
+            } catch (IOException ex) {
+                // ignore close exception
+            }
         }
-      } catch (IOException ex) {
-        // ignore close exception
-      }
+        return result;
     }
-    return result;
-  }
-  @Override
-  public void put(K key, V value) {
-    int reloadTime = cacheConfig.getReloadTime();
-    if(reloadTime < 0) {
-      jedis.setex(toBytes(key), reloadTime, toBytes(value));
-    } else {
-      jedis.set(toBytes(key), toBytes(value));
+
+    public Object toObject(byte[] bytes) {
+        if (bytes == null || bytes.length < 1) return null;
+
+        ByteArrayInputStream bis = new ByteArrayInputStream(bytes);
+
+        ObjectInput in = null;
+        Object result = null;
+
+        try {
+            in = new ObjectInputStream(bis);
+            result = in.readObject();
+        } catch (IOException e) {
+            //Log error
+        } catch (ClassNotFoundException e) {
+            //Log error
+        } finally {
+            try {
+                bis.close();
+            } catch (IOException ex) {
+                // ignore close exception
+            }
+            try {
+                if (in != null) {
+                    in.close();
+                }
+            } catch (IOException ex) {
+                // ignore close exception
+            }
+        }
+        return result;
     }
-  }
 
-  @Override
-  public V get(K key) {
-    return (V) toObject(jedis.get(toBytes(key)));
-  }
+    @Override
+    public void put(K key, V value) {
+        int reloadTime = cacheConfig.getReloadTime();
+        if (reloadTime < 0) {
+            jedis.setex(toBytes(key), reloadTime, toBytes(value));
+        } else {
+            jedis.set(toBytes(key), toBytes(value));
+        }
+    }
 
-  @Override
-  public void invalidate(K key) {
-      jedis.del(toBytes(key));
-  }
+    @Override
+    public V get(K key) {
+        return (V) toObject(jedis.get(toBytes(key)));
+    }
 
-  @Override
-  public void invalidateAll() {
-    jedis.flushDB();
-  }
+    @Override
+    public void invalidate(K key) {
+        jedis.del(toBytes(key));
+    }
+
+    @Override
+    public void invalidateAll() {
+        jedis.flushDB();
+    }
 }

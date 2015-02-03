@@ -368,7 +368,7 @@ public class JSCSSMergeServlet extends HttpServlet {
             LOGGER.trace("Processing resource : {}", resourcePath);
 
             InputStream is = null;
-            byte [] newLineBytes = "\n".getBytes();
+            byte[] newLineBytes = "\n".getBytes();
             try {
                 is = context.getResourceAsStream(resourcePath);
                 if (is == null) {
@@ -383,7 +383,7 @@ public class JSCSSMergeServlet extends HttpServlet {
                     byte[] buffer = new byte[128];
                     int c;
                     //Add extra new line to avoid merging issues when there is single line comment in the end of file
-                    if(addNewLine) {
+                    if (addNewLine) {
                         outputStream.write(newLineBytes);
                         contentLength += newLineBytes.length;
                     }
@@ -432,7 +432,7 @@ public class JSCSSMergeServlet extends HttpServlet {
             buffer.setLength(0);
             buffer.append(line);
             line = this.processCSSLine(context, contextPath, cssFilePath, buffer);
-            byte [] bytes = (line + "\n").getBytes();
+            byte[] bytes = (line + "\n").getBytes();
             outputStream.write(bytes);
             bytesWritten += bytes.length;
         }

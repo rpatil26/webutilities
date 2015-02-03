@@ -56,7 +56,7 @@ public abstract class EncodedStreamsFactory {
         return SUPPORTED_ENCODINGS.get(contentEncoding);
     }
 
-    public abstract CompressedOutput getCompressedStream(OutputStream outputStream) throws  IOException;
+    public abstract CompressedOutput getCompressedStream(OutputStream outputStream) throws IOException;
 
     public abstract CompressedInput getCompressedStream(InputStream inputStream) throws IOException;
 
@@ -101,12 +101,12 @@ class ZIPEncodedStreamsFactory extends EncodedStreamsFactory {
             boolean entryAdded = false;
 
             public OutputStream getCompressedOutputStream() {
-                if(!entryAdded){
-                    try{
+                if (!entryAdded) {
+                    try {
                         ZipEntry entry = new ZipEntry("compressed-response.out");
                         zipOutputStream.putNextEntry(entry);
                         entryAdded = true;
-                    }catch (IOException ioe){
+                    } catch (IOException ioe) {
                         //ignore
                     }
                 }
@@ -114,7 +114,7 @@ class ZIPEncodedStreamsFactory extends EncodedStreamsFactory {
             }
 
             public void finish() throws IOException {
-                if(entryAdded){
+                if (entryAdded) {
                     zipOutputStream.closeEntry();
                 }
                 zipOutputStream.finish();

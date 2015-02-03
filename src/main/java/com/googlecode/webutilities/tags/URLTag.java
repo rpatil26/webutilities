@@ -31,13 +31,12 @@ import javax.servlet.jsp.tagext.BodyTagSupport;
  *
  * @author rpatil
  * @version 1.0
- *
  */
 public class URLTag extends BodyTagSupport {
 
     private static final long serialVersionUID = 1L;
 
-	private String value;
+    private String value;
 
     private String context;
 
@@ -73,13 +72,13 @@ public class URLTag extends BodyTagSupport {
 
     public int doEndTag() throws JspException {
 
-        if(value == null || Utils.isProtocolURL(value.toLowerCase().trim())){
+        if (value == null || Utils.isProtocolURL(value.toLowerCase().trim())) {
             LOGGER.trace("Invalid url : {}", value);
             return gracefully();
         }
 
-        if(context == null){
-            HttpServletRequest httpServletRequest = (HttpServletRequest)pageContext.getRequest();
+        if (context == null) {
+            HttpServletRequest httpServletRequest = (HttpServletRequest) pageContext.getRequest();
             context = httpServletRequest.getContextPath();
         }
 
@@ -89,19 +88,19 @@ public class URLTag extends BodyTagSupport {
         }
 
         //We got the url, now suffix the fingerprint to it, right before .
-        String eTag = Utils.buildETagForResources(Utils.findResourcesToMerge(context, value),pageContext.getServletContext());
+        String eTag = Utils.buildETagForResources(Utils.findResourcesToMerge(context, value), pageContext.getServletContext());
 
         value = Utils.addFingerPrint(eTag, value);
 
         value = context + "/" + value;
 
-        value = value.replaceAll("/+","/");
+        value = value.replaceAll("/+", "/");
 
         return gracefully();
     }
 
-    private int gracefully() throws JspTagException{
-        if(value != null){
+    private int gracefully() throws JspTagException {
+        if (value != null) {
             if (var != null)
                 pageContext.setAttribute(var, value, scope);
             else {

@@ -21,14 +21,14 @@ import com.googlecode.webutilities.common.WebUtilitiesResponseWrapper;
 import javax.servlet.http.HttpServletResponse;
 import java.io.IOException;
 
-public class ModuleResponse extends WebUtilitiesResponseWrapper{
+public class ModuleResponse extends WebUtilitiesResponseWrapper {
 
     public ModuleResponse(HttpServletResponse response) {
         super(response);
     }
 
-    public void commit() throws IOException{
-        this.fill((HttpServletResponse)this.getResponse());
+    public void commit() throws IOException {
+        this.fill((HttpServletResponse) this.getResponse());
     }
 
 }

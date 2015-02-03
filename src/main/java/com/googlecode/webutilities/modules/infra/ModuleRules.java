@@ -25,11 +25,11 @@ public class ModuleRules {
 
     private List<PostChainRule> postChainRules = new ArrayList<PostChainRule>();
 
-    public boolean addRule(IRule rule){
-        if(rule instanceof PostChainRule){
-            return postChainRules.add((PostChainRule)rule);
-        }else{
-            return preChainRules.add((PreChainRule)rule);
+    public boolean addRule(IRule rule) {
+        if (rule instanceof PostChainRule) {
+            return postChainRules.add((PostChainRule) rule);
+        } else {
+            return preChainRules.add((PreChainRule) rule);
         }
     }
 

@@ -29,33 +29,39 @@ import java.io.IOException;
 public class WebUtilitiesResponseOutputStream extends ServletOutputStream {
 
     private ByteArrayOutputStream byteArrayOutputStream;
-	
-	public WebUtilitiesResponseOutputStream(WebUtilitiesResponseWrapper wrapper){
-            	byteArrayOutputStream = new ByteArrayOutputStream();
-	}
-	
-	public void write(int b) throws IOException {
-		byteArrayOutputStream.write(b);
-	}
-	@Override
-	public void close() throws IOException {
-		byteArrayOutputStream.close();
-	}
-	@Override
-	public void flush() throws IOException {
-		byteArrayOutputStream.flush();
-	}
-	@Override
-	public void write(byte[] b, int off, int len) throws IOException {
-		byteArrayOutputStream.write(b, off, len);
-	}
-	@Override
-	public void write(byte[] b) throws IOException {
-		byteArrayOutputStream.write(b);
-	}
-	public ByteArrayOutputStream getByteArrayOutputStream() {
-		return byteArrayOutputStream;
-	}
+
+    public WebUtilitiesResponseOutputStream(WebUtilitiesResponseWrapper wrapper) {
+        byteArrayOutputStream = new ByteArrayOutputStream();
+    }
+
+    public void write(int b) throws IOException {
+        byteArrayOutputStream.write(b);
+    }
+
+    @Override
+    public void close() throws IOException {
+        byteArrayOutputStream.close();
+    }
+
+    @Override
+    public void flush() throws IOException {
+        byteArrayOutputStream.flush();
+    }
+
+    @Override
+    public void write(byte[] b, int off, int len) throws IOException {
+        byteArrayOutputStream.write(b, off, len);
+    }
+
+    @Override
+    public void write(byte[] b) throws IOException {
+        byteArrayOutputStream.write(b);
+    }
+
+    public ByteArrayOutputStream getByteArrayOutputStream() {
+        return byteArrayOutputStream;
+    }
+
     void reset() {
         byteArrayOutputStream.reset();
     }

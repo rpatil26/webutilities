@@ -16,6 +16,6 @@
 
 package com.googlecode.webutilities.modules.ne;
 
-public interface PreChainDirective extends IDirective{
+public interface PreChainDirective extends IDirective {
 
 }

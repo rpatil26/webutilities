@@ -106,8 +106,8 @@ public abstract class AbstractFilter implements Filter, IgnoreAcceptContext {
         this.acceptQSPattern = filterConfig.getInitParameter(INIT_PARAM_ACCEPT_QS_PATTERN);
 
         LOGGER.debug("Abstract Filter initialized with: {\n\t{}:{},\n\t{}:{},\n\t{}:{},\n\t{}:{}\n\t{}:{},\n\t{}:{},\n" +
-            "\t{}:{}\n}",
-            INIT_PARAM_IGNORE_URL_PATTERN, ignoreURLPattern,
+                        "\t{}:{}\n}",
+                INIT_PARAM_IGNORE_URL_PATTERN, ignoreURLPattern,
                 INIT_PARAM_ACCEPT_URL_PATTERN, acceptURLPattern,
                 INIT_PARAM_IGNORE_MIME_PATTERN, ignoreMIMEPattern,
                 INIT_PARAM_ACCEPT_MIME_PATTERN, acceptMIMEPattern,
@@ -150,7 +150,7 @@ public abstract class AbstractFilter implements Filter, IgnoreAcceptContext {
         return !this.isQueryStringIgnored(queryString) && (this.acceptQSPattern == null || (queryString != null && queryString.matches(acceptQSPattern)));
     }
 
-  @Override
+    @Override
     public void destroy() {
         LOGGER.debug("destroying...");
         this.filterConfig = null;

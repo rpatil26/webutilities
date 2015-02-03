@@ -79,10 +79,10 @@ public class ClosureCompilerFilter extends AbstractFilter {
         boolean alreadyProcessed = req.getAttribute(PROCESSED_ATTR) != null;
 
         if (!alreadyProcessed
-            && isURLAccepted(url)
-            && isQueryStringAccepted(rq.getQueryString())
-            && isUserAgentAccepted(rq.getHeader(Constants.HTTP_USER_AGENT_HEADER))
-            && (lowerUrl.endsWith(EXT_JS) || lowerUrl.endsWith(EXT_JSON) || lowerUrl.endsWith(EXT_CSS))) {
+                && isURLAccepted(url)
+                && isQueryStringAccepted(rq.getQueryString())
+                && isUserAgentAccepted(rq.getHeader(Constants.HTTP_USER_AGENT_HEADER))
+                && (lowerUrl.endsWith(EXT_JS) || lowerUrl.endsWith(EXT_JSON) || lowerUrl.endsWith(EXT_CSS))) {
 
             req.setAttribute(PROCESSED_ATTR, Boolean.TRUE);
 

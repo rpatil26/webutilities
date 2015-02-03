@@ -36,13 +36,12 @@ public final class TestUtils {
         int c;
         while ((c = reader.read()) != -1) {
             //stringBuilder.append(line).append("\n");
-            stringBuilder.append((char)c);
+            stringBuilder.append((char) c);
         }
         inputStream.close();
-        return new String(stringBuilder.toString().getBytes(),encoding);
+        return new String(stringBuilder.toString().getBytes(), encoding);
 
     }
-
 
 
     public static boolean contentEquals(InputStream streamLeft, InputStream streamRight) throws IOException {
@@ -60,7 +59,7 @@ public final class TestUtils {
     public static boolean compressedContentEquals(String left, String right) throws IOException {
         int ch, pos = 0;
 
-        if(left == null && right == null){
+        if (left == null && right == null) {
             return true;
         }
 
@@ -71,8 +70,8 @@ public final class TestUtils {
         while ((ch = streamLeft.read()) != -1) {
             int ch2 = streamRight.read();
             if (ch != ch2) {
-                if(pos == 9){ //Ignore OS byte in GZIP header
-                	LOGGER.info("Ignoring OS bit.... {} != {}", ch, ch2);
+                if (pos == 9) { //Ignore OS byte in GZIP header
+                    LOGGER.info("Ignoring OS bit.... {} != {}", ch, ch2);
                     continue;
                 }
                 return false;

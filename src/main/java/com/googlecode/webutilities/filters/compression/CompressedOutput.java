@@ -23,6 +23,6 @@ public interface CompressedOutput {
 
     OutputStream getCompressedOutputStream();
 
-	void finish() throws IOException;
+    void finish() throws IOException;
 
 }

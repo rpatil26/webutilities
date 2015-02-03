@@ -16,10 +16,7 @@
 
 package com.googlecode.webutilities.test;
 
-import com.googlecode.webutilities.test.filters.CharacterEncodingFilterTest;
-import com.googlecode.webutilities.test.filters.CompressionFilterTest;
-import com.googlecode.webutilities.test.filters.ResponseCacheFilterTest;
-import com.googlecode.webutilities.test.filters.YUIMinFilterTest;
+import com.googlecode.webutilities.test.filters.*;
 import com.googlecode.webutilities.test.tags.URLTagTest;
 import com.googlecode.webutilities.test.tags.YUIMinTagTest;
 import org.junit.runners.Suite;
@@ -29,12 +26,14 @@ import org.junit.runners.Suite;
  * Test suit for webutilities tests
  */
 @Suite.SuiteClasses({CompressionFilterTest.class,
-    YUIMinFilterTest.class,
-    YUIMinTagTest.class,
-    CharacterEncodingFilterTest.class,
-    CompressionFilterTest.class,
-    ResponseCacheFilterTest.class,
-    URLTagTest.class})
+        YUIMinFilterTest.class,
+        YUIMinTagTest.class,
+        CharacterEncodingFilterTest.class,
+        CompressionFilterTest.class,
+        ResponseCacheFilterTest.class,
+        MemcachedResponseCacheFilterTest.class,
+        RedisResponseCacheFilterTest.class,
+        URLTagTest.class})
 public class WebutilitiesTestSuite {
 
 }

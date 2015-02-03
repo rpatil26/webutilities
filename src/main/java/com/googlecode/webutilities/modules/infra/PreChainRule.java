@@ -16,6 +16,6 @@
 
 package com.googlecode.webutilities.modules.infra;
 
-public interface PreChainRule extends IRule{
+public interface PreChainRule extends IRule {
 
 }
