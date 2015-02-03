@@ -30,4 +30,6 @@ public interface Cache<K, V> {
 
     public void invalidateAll();
 
+    public void shutdown();
+
 }

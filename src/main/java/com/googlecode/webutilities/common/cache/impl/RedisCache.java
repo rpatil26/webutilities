@@ -19,6 +19,7 @@ package com.googlecode.webutilities.common.cache.impl;
 import com.googlecode.webutilities.common.cache.Cache;
 import com.googlecode.webutilities.common.cache.CacheConfig;
 import redis.clients.jedis.Jedis;
+import redis.clients.jedis.JedisPool;
 
 import java.io.*;
 
@@ -27,13 +28,20 @@ import java.io.*;
  */
 public class RedisCache<K, V> implements Cache<K, V> {
 
-    private Jedis jedis;
+    private JedisPool jedisPool;
+
     CacheConfig<K, V> cacheConfig;
 
     public RedisCache(CacheConfig<K, V> config) {
         this.cacheConfig = config;
-        jedis = new Jedis(config.getHostname(), config.getPortNumber());
-        jedis.connect();
+        this.getPool(config.getHostname(), config.getPortNumber());
+    }
+
+    private JedisPool getPool(String server, int port) {
+        if (this.jedisPool == null) {
+            this.jedisPool = new JedisPool(server, port);
+        }
+        return this.jedisPool;
     }
 
     private byte[] toBytes(Object value) {
@@ -99,25 +107,59 @@ public class RedisCache<K, V> implements Cache<K, V> {
     @Override
     public void put(K key, V value) {
         int reloadTime = cacheConfig.getReloadTime();
-        if (reloadTime < 0) {
-            jedis.setex(toBytes(key), reloadTime, toBytes(value));
-        } else {
-            jedis.set(toBytes(key), toBytes(value));
+        Jedis jedis = this.jedisPool.getResource();
+        try {
+            if (reloadTime < 0) {
+                jedis.setex(toBytes(key), reloadTime, toBytes(value));
+            } else {
+                jedis.set(toBytes(key), toBytes(value));
+            }
+        } finally {
+            if (jedis != null) {
+                this.jedisPool.returnResource(jedis);
+            }
         }
+
     }
 
     @Override
     public V get(K key) {
-        return (V) toObject(jedis.get(toBytes(key)));
+        Jedis jedis = this.jedisPool.getResource();
+        try {
+            return (V) toObject(jedis.get(toBytes(key)));
+        } finally {
+            if (jedis != null) {
+                this.jedisPool.returnResource(jedis);
+            }
+        }
     }
 
     @Override
     public void invalidate(K key) {
-        jedis.del(toBytes(key));
+        Jedis jedis = this.jedisPool.getResource();
+        try {
+            jedis.del(toBytes(key));
+        } finally {
+            if (jedis != null) {
+                this.jedisPool.returnResource(jedis);
+            }
+        }
     }
 
     @Override
     public void invalidateAll() {
-        jedis.flushDB();
+        Jedis jedis = this.jedisPool.getResource();
+        try {
+            jedis.flushDB();
+        } finally {
+            if (jedis != null) {
+                this.jedisPool.returnResource(jedis);
+            }
+        }
+    }
+
+    @Override
+    public void shutdown() {
+        this.jedisPool.close();
     }
 }

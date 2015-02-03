@@ -57,4 +57,9 @@ public class GoogleCache<K, V> implements Cache<K, V> {
     public void invalidateAll() {
         googleCache.invalidateAll();
     }
+
+    @Override
+    public void shutdown() {
+
+    }
 }

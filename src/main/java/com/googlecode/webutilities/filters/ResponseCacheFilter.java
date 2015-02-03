@@ -28,12 +28,11 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import javax.servlet.*;
-import javax.servlet.http.Cookie;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import java.io.IOException;
-import java.io.Serializable;
-import java.util.*;
+import java.util.Date;
+import java.util.List;
 
 import static com.googlecode.webutilities.common.Constants.DEFAULT_CACHE_CONTROL;
 import static com.googlecode.webutilities.common.Constants.DEFAULT_EXPIRES_MINUTES;
@@ -121,7 +120,7 @@ public class ResponseCacheFilter extends AbstractFilter {
         String providerValue = readString(filterConfig.getInitParameter(INIT_PARAM_CACHE_PROVIDER), null);
 
         if (providerValue != null)
-            cacheConfig.setProvider(CacheConfig.CacheProvider.valueOf(providerValue));
+            cacheConfig.setProvider(CacheConfig.CacheProvider.valueOf(providerValue.toUpperCase()));
 
         String cacheHost = filterConfig.getInitParameter(INIT_PARAM_CACHE_HOST);
         cacheConfig.setHostname(cacheHost);
@@ -166,7 +165,7 @@ public class ResponseCacheFilter extends AbstractFilter {
 
         String url = httpServletRequest.getRequestURI();
 
-        httpServletResponse.setHeader(CACHE_HEADER, CacheState.SKIPPED.toString());
+        //httpServletResponse.setHeader(CACHE_HEADER, CacheState.SKIPPED.toString());
 
         if (!isURLAccepted(url)
                 || !isQueryStringAccepted(httpServletRequest.getQueryString())
@@ -174,13 +173,19 @@ public class ResponseCacheFilter extends AbstractFilter {
             LOGGER.debug("Skipping Cache filter for: {}?{}", url, httpServletRequest.getQueryString());
             LOGGER.debug("URL, QueryString or UserAgent not accepted");
             filterChain.doFilter(servletRequest, servletResponse);
+            httpServletResponse.setHeader(CACHE_HEADER, CacheState.SKIPPED.toString());
             return;
         }
 
 
         long now = new Date().getTime();
 
-        CachedResponse cachedResponse = cache.get(url);
+        CachedResponse cachedResponse = null;
+        try {
+            cachedResponse = cache.get(url);
+        } catch (Exception ex) {
+            LOGGER.trace("Failed to read from Cache for {}. {}", url, ex);
+        }
 
         boolean expireCache = httpServletRequest.getParameter(Constants.PARAM_EXPIRE_CACHE) != null;
 
@@ -201,6 +206,7 @@ public class ResponseCacheFilter extends AbstractFilter {
         boolean skipCache = httpServletRequest.getParameter(Constants.PARAM_DEBUG) != null || httpServletRequest.getParameter(Constants.PARAM_SKIP_CACHE) != null;
 
         if (skipCache) {
+            httpServletResponse.setHeader(CACHE_HEADER, CacheState.SKIPPED.toString()); //Set header before getWriter
             filterChain.doFilter(servletRequest, servletResponse);
             LOGGER.trace("Skipping Cache for {} due to URL parameter.", url);
             return;
@@ -216,8 +222,9 @@ public class ResponseCacheFilter extends AbstractFilter {
         JSCSSMergeServlet.ResourceStatus status = JSCSSMergeServlet.isNotModified(context, httpServletRequest, requestedResources, false);
         if (status.isNotModified()) {
             LOGGER.trace("Resources Not Modified. Sending 304.");
-            cache.invalidate(url);
+            //cache.invalidate(url);
             JSCSSMergeServlet.sendNotModified(httpServletResponse, extensionOrPath, status.getActualETag(), DEFAULT_EXPIRES_MINUTES, DEFAULT_CACHE_CONTROL);
+            httpServletResponse.setHeader(CACHE_HEADER, CacheState.SKIPPED.toString());
             return;
         }
 
@@ -230,18 +237,17 @@ public class ResponseCacheFilter extends AbstractFilter {
                 cacheFound = false;
             } else {
                 LOGGER.trace("Found valid cached response.");
-                //cacheObject.increaseAccessCount();
                 cacheFound = true;
             }
         }
 
         if (cacheFound) {
             LOGGER.debug("Returning Cached response.");
+            httpServletResponse.setHeader(CACHE_HEADER, CacheState.FOUND.toString()); //Set header before getWriter
             cachedResponse.toResponse(httpServletResponse);
-            httpServletResponse.setHeader(CACHE_HEADER, CacheState.FOUND.toString());
         } else {
             LOGGER.trace("Cache not found or invalidated");
-            httpServletResponse.setHeader(CACHE_HEADER, CacheState.NOT_FOUND.toString());
+            httpServletResponse.setHeader(CACHE_HEADER, CacheState.NOT_FOUND.toString()); //Set header before getWriter
             WebUtilitiesResponseWrapper wrapper = new WebUtilitiesResponseWrapper(httpServletResponse);
             filterChain.doFilter(servletRequest, wrapper);
 
@@ -250,9 +256,14 @@ public class ResponseCacheFilter extends AbstractFilter {
                 wrapper.setStatus(200);
             }
             if (isMIMEAccepted(wrapper.getContentType()) && !expireCache && !resetCache && wrapper.getStatus() == 200) { //Cache only 200 status response
-                cache.put(url, new CachedResponse(getLastModifiedFor(requestedResources, context), wrapper));
-                LOGGER.debug("Cache added for: {}", url);
-                httpServletResponse.setHeader(CACHE_HEADER, CacheState.ADDED.toString());
+                try {
+                    cache.put(url, new CachedResponse(getLastModifiedFor(requestedResources, context), wrapper));
+                    LOGGER.debug("Cache added for: {}", url);
+                    httpServletResponse.setHeader(CACHE_HEADER, CacheState.ADDED.toString()); //Set header before getWriter
+                } catch (Exception ex) {
+                    LOGGER.debug("Failed to add cache for: {}. {}", url, ex);
+                }
+
             } else {
                 LOGGER.trace("Cache NOT added for: {}", url);
                 LOGGER.trace("is MIME not accepted: {}", isMIMEAccepted(wrapper.getContentType()));
@@ -262,6 +273,14 @@ public class ResponseCacheFilter extends AbstractFilter {
             wrapper.fill(httpServletResponse);
         }
 
+    }
+
+    @Override
+    public void destroy() {
+        super.destroy();
+        if (this.cache != null) {
+            this.cache.shutdown();
+        }
     }
 
     protected void invalidateCache() {

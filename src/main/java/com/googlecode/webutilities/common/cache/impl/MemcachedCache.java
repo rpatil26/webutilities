@@ -18,6 +18,9 @@ package com.googlecode.webutilities.common.cache.impl;
 
 import com.googlecode.webutilities.common.cache.Cache;
 import com.googlecode.webutilities.common.cache.CacheConfig;
+import net.spy.memcached.AddrUtil;
+import net.spy.memcached.ConnectionFactoryBuilder;
+import net.spy.memcached.FailureMode;
 import net.spy.memcached.MemcachedClient;
 
 import java.io.IOException;
@@ -34,7 +37,8 @@ public class MemcachedCache<K, V> implements Cache<K, V> {
 
     public MemcachedCache(CacheConfig<K, V> config) throws IOException {
         this.cacheConfig = config;
-        this.client = new MemcachedClient(new InetSocketAddress(config.getHostname(), config.getPortNumber()));
+        String addr = config.getHostname() + ":" + config.getPortNumber();
+        this.client = new MemcachedClient(new ConnectionFactoryBuilder().setDaemon(true).setFailureMode(FailureMode.Retry).build(), AddrUtil.getAddresses(addr));
     }
 
     @Override
@@ -60,5 +64,11 @@ public class MemcachedCache<K, V> implements Cache<K, V> {
     @Override
     public void invalidateAll() {
         client.flush();
+    }
+
+    @Override
+    public void shutdown() {
+        client.flush();
+        client.shutdown();
     }
 }
