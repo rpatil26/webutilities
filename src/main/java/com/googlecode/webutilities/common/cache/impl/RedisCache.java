@@ -159,7 +159,7 @@ public class RedisCache<K, V> implements Cache<K, V> {
     }
 
     @Override
-    public void shutdown() {
+    public void cleanup() {
         this.jedisPool.close();
     }
 }

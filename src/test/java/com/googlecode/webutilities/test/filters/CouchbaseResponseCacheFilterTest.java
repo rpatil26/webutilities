@@ -14,22 +14,12 @@
  * limitations under the License.
  */
 
-package com.googlecode.webutilities.common.cache;
+package com.googlecode.webutilities.test.filters;
 
-/**
- * Cache Provider responsible for Cache management - put/get/invalidate etc.
- */
+public class CouchbaseResponseCacheFilterTest extends ResponseCacheFilterTest {
 
-public interface Cache<K, V> {
-
-    public void put(K key, V value);
-
-    public V get(K key);
-
-    public void invalidate(K key);
-
-    public void invalidateAll();
-
-    public void cleanup();
-
+    @Override
+    protected String getTestPropertiesName() {
+        return CouchbaseResponseCacheFilterTest.class.getSimpleName() + ".properties";
+    }
 }

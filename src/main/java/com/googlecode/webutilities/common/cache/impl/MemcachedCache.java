@@ -67,8 +67,9 @@ public class MemcachedCache<K, V> implements Cache<K, V> {
     }
 
     @Override
-    public void shutdown() {
+    public void cleanup() {
         client.flush();
         client.shutdown();
+        client = null;
     }
 }

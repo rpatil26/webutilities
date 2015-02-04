@@ -21,7 +21,7 @@ package com.googlecode.webutilities.common.cache;
  */
 public class CacheConfig<K, V> {
 
-    public static enum CacheProvider {DEFAULT, MEMCACHED, REDIS}
+    public static enum CacheProvider {DEFAULT, MEMCACHED, REDIS, COUCHBASE}
 
     private CacheProvider provider;
 

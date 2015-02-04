@@ -30,7 +30,7 @@ public class ResponseCacheFilterTest extends AbstractFilterTest {
 
     private JSCSSMergeServlet jscssMergeServlet = new JSCSSMergeServlet();
 
-    private ResponseCacheFilter responseCacheFilter = new ResponseCacheFilter();
+    private ResponseCacheFilter responseCacheFilter = new ExtendedMockResponseCacheFilter();
 
     protected final Logger LOGGER = LoggerFactory.getLogger(ResponseCacheFilterTest.class.getName());
 

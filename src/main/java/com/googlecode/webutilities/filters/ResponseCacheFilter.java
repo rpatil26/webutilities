@@ -279,7 +279,8 @@ public class ResponseCacheFilter extends AbstractFilter {
     public void destroy() {
         super.destroy();
         if (this.cache != null) {
-            this.cache.shutdown();
+            this.cache.cleanup();
+            this.cache = null;
         }
     }
 

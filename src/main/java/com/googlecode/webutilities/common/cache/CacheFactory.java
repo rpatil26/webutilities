@@ -16,6 +16,7 @@
 
 package com.googlecode.webutilities.common.cache;
 
+import com.googlecode.webutilities.common.cache.impl.CouchbaseCache;
 import com.googlecode.webutilities.common.cache.impl.GoogleCache;
 import com.googlecode.webutilities.common.cache.impl.MemcachedCache;
 import com.googlecode.webutilities.common.cache.impl.RedisCache;
@@ -36,6 +37,8 @@ public class CacheFactory {
             return new MemcachedCache<K, V>(config);
         } else if (CacheConfig.CacheProvider.REDIS.equals(config.getProvider())) {
             return new RedisCache<K, V>(config);
+        } else if (CacheConfig.CacheProvider.COUCHBASE.equals(config.getProvider())) {
+            return new CouchbaseCache<K, V>(config);
         } else {
             return new GoogleCache<K, V>(new CacheConfig<K, V>());
         }
@@ -44,12 +47,14 @@ public class CacheFactory {
     public static boolean isCacheProvider(Cache cache, CacheConfig.CacheProvider provider) {
         return cache != null
                 && provider != null
-                && (CacheConfig.CacheProvider.MEMCACHED.equals(provider)
-                    && cache instanceof MemcachedCache
-                    || CacheConfig.CacheProvider.REDIS.equals(provider)
-                    && cache instanceof RedisCache
-                    || CacheConfig.CacheProvider.DEFAULT.equals(provider)
-                    && cache instanceof GoogleCache);
+                && ((CacheConfig.CacheProvider.MEMCACHED.equals(provider)
+                && cache instanceof MemcachedCache)
+                || (CacheConfig.CacheProvider.REDIS.equals(provider)
+                && cache instanceof RedisCache)
+                || (CacheConfig.CacheProvider.COUCHBASE.equals(provider)
+                && cache instanceof CouchbaseCache)
+                || (CacheConfig.CacheProvider.DEFAULT.equals(provider)
+                && cache instanceof GoogleCache));
     }
 }
 
