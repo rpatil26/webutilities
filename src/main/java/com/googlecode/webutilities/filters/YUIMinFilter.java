@@ -155,6 +155,7 @@ public class YUIMinFilter extends AbstractFilter {
             //Let the response be generated
 
             chain.doFilter(req, wrapper);
+            wrapper.flushBuffer();
 
             Writer out = resp.getWriter();
 
