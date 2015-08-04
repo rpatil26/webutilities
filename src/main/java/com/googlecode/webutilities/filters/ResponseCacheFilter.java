@@ -93,6 +93,8 @@ public class ResponseCacheFilter extends AbstractFilter {
 
     private long lastResetTime;
 
+    private String cacheKeyFormat;
+
     private static final Logger LOGGER = LoggerFactory.getLogger(ResponseCacheFilter.class.getName());
 
     private static final String INIT_PARAM_CACHE_PROVIDER = "cacheProvider"; //Enum value {DEFAULT, MEMCACHED, REDIS};
@@ -105,6 +107,10 @@ public class ResponseCacheFilter extends AbstractFilter {
 
     private static final String INIT_PARAM_RESET_TIME = "resetTime";
 
+    private static final String INIT_PARAM_CAHE_KEY_FORMAT = "cacheKeyFormat"; //Comma separated list of attributes to be used in the order to form the cache key
+
+    private static final String DEFAULT_CACHE_KEY_FORMAT = "URI"; //eg. "queryString, header=X-Requested-By, parameter=username". URI is always part of key
+
     @Override
     public void init(FilterConfig filterConfig) throws ServletException {
         super.init(filterConfig);
@@ -112,6 +118,7 @@ public class ResponseCacheFilter extends AbstractFilter {
         int reloadTime = readInt(filterConfig.getInitParameter(INIT_PARAM_RELOAD_TIME), 0);
 
         this.resetTime = readInt(filterConfig.getInitParameter(INIT_PARAM_RESET_TIME), resetTime);
+        this.cacheKeyFormat = readString(filterConfig.getInitParameter(INIT_PARAM_CAHE_KEY_FORMAT), DEFAULT_CACHE_KEY_FORMAT);
 
         lastResetTime = new Date().getTime();
 
@@ -164,6 +171,7 @@ public class ResponseCacheFilter extends AbstractFilter {
         HttpServletResponse httpServletResponse = (HttpServletResponse) servletResponse;
 
         String url = httpServletRequest.getRequestURI();
+        String cacheKey = generateCacheKeyForTheRequest(httpServletRequest);
 
         //httpServletResponse.setHeader(CACHE_HEADER, CacheState.SKIPPED.toString());
 
@@ -182,7 +190,7 @@ public class ResponseCacheFilter extends AbstractFilter {
 
         CachedResponse cachedResponse = null;
         try {
-            cachedResponse = cache.get(url);
+            cachedResponse = cache.get(cacheKey);
         } catch (Exception ex) {
             LOGGER.trace("Failed to read from Cache for {}. {}", url, ex);
         }
@@ -191,7 +199,7 @@ public class ResponseCacheFilter extends AbstractFilter {
 
         if (expireCache) {
             LOGGER.trace("Removing Cache for {}  due to URL parameter.", url);
-            cache.invalidate(url);
+            cache.invalidate(cacheKey);
         }
 
         boolean resetCache = httpServletRequest.getParameter(Constants.PARAM_RESET_CACHE) != null ||
@@ -222,7 +230,7 @@ public class ResponseCacheFilter extends AbstractFilter {
         JSCSSMergeServlet.ResourceStatus status = JSCSSMergeServlet.isNotModified(context, httpServletRequest, requestedResources, false);
         if (status.isNotModified()) {
             LOGGER.trace("Resources Not Modified. Sending 304.");
-            //cache.invalidate(url);
+            //cache.invalidate(cacheKey);
             JSCSSMergeServlet.sendNotModified(httpServletResponse, extensionOrPath, status.getActualETag(), DEFAULT_EXPIRES_MINUTES, DEFAULT_CACHE_CONTROL);
             httpServletResponse.setHeader(CACHE_HEADER, CacheState.SKIPPED.toString());
             return;
@@ -233,7 +241,7 @@ public class ResponseCacheFilter extends AbstractFilter {
         if (cachedResponse != null) {
             if (requestedResources != null && isAnyResourceModifiedSince(requestedResources, cachedResponse.getTime(), context)) {
                 LOGGER.trace("Some resources have been modified since last cache: {}", url);
-                cache.invalidate(url);
+                cache.invalidate(cacheKey);
                 cacheFound = false;
             } else {
                 LOGGER.trace("Found valid cached response.");
@@ -257,7 +265,7 @@ public class ResponseCacheFilter extends AbstractFilter {
             }
             if (isMIMEAccepted(wrapper.getContentType()) && !expireCache && !resetCache && wrapper.getStatus() == 200) { //Cache only 200 status response
                 try {
-                    cache.put(url, new CachedResponse(getLastModifiedFor(requestedResources, context), wrapper));
+                    cache.put(cacheKey, new CachedResponse(getLastModifiedFor(requestedResources, context), wrapper));
                     LOGGER.debug("Cache added for: {}", url);
                     httpServletResponse.setHeader(CACHE_HEADER, CacheState.ADDED.toString()); //Set header before getWriter
                 } catch (Exception ex) {
@@ -273,6 +281,39 @@ public class ResponseCacheFilter extends AbstractFilter {
             wrapper.fill(httpServletResponse);
         }
 
+    }
+
+    /**
+     * Generate the cache key for the specific request by using the cacheKeyFormat init param
+     * You can specify comma separated list of attributes that you want to use to build the cache key.
+     * URI is by default part of the cache key. Using cacheKeyFormat params you can optionally include following details.
+     *  - queryString
+     *  - specific header value
+     *  - specific request parameter value
+     *
+     * Example cacheKeyFormats
+     * - "queryString"
+     * - "header=Content-Type, header=Vary"
+     * - "parameter=format, parameter=id, header=Vary"
+     *
+     * @param request
+     * @return
+     */
+    protected String generateCacheKeyForTheRequest(HttpServletRequest request) {
+        StringBuffer cacheKey = new StringBuffer();
+        cacheKey.append(request.getRequestURI());
+        String[] keyAttributes = this.cacheKeyFormat.split(",");
+        for (String attr : keyAttributes) {
+            String keyAttr = attr.trim().toLowerCase();
+            if (keyAttr.equalsIgnoreCase("queryString") && request.getQueryString() != null) {
+                cacheKey.append("+").append(request.getQueryString());
+            } else if (keyAttr.startsWith("header=")) {
+                cacheKey.append("+").append(request.getHeader(keyAttr.substring(7).trim()));
+            } else if (keyAttr.startsWith("parameter=")) {
+                cacheKey.append("+").append(request.getHeader(keyAttr.substring(9).trim()));
+            }
+        }
+        return cacheKey.toString();
     }
 
     @Override
