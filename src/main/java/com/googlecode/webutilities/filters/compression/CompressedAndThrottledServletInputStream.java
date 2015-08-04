@@ -20,6 +20,7 @@ import com.googlecode.webutilities.common.Constants;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
+import javax.servlet.ReadListener;
 import javax.servlet.ServletInputStream;
 import java.io.IOException;
 import java.io.InputStream;
@@ -153,4 +154,18 @@ final class CompressedAndThrottledServletInputStream extends ServletInputStream 
         }
     }
 
+    @Override
+    public boolean isFinished() {
+        return bytesRead >= maxBytesToRead;
+    }
+
+    @Override
+    public boolean isReady() {
+        return true;
+    }
+
+    @Override
+    public void setReadListener(ReadListener readListener) {
+        throw new RuntimeException("Not yet implemented");
+    }
 }

@@ -90,12 +90,12 @@ public final class CompressedHttpServletRequestWrapper extends HttpServletReques
     }
 
     @Override
-    public Enumeration<?> getHeaders(String header) {
-        Enumeration<?> original = super.getHeaders(header);
+    public Enumeration<String> getHeaders(String header) {
+        Enumeration<String> original = super.getHeaders(header);
         if (original == null) {
             return null;
         }
-        return skippedHeader(header) ? Collections.enumeration(Collections.<Object>emptyList()) : original;
+        return skippedHeader(header) ? Collections.enumeration(Collections.<String>emptyList()) : original;
     }
 
     @Override
@@ -109,7 +109,7 @@ public final class CompressedHttpServletRequestWrapper extends HttpServletReques
     }
 
     @Override
-    public Enumeration<?> getHeaderNames() {
+    public Enumeration<String> getHeaderNames() {
         Enumeration<?> originalHeaderNames = super.getHeaderNames();
         if (originalHeaderNames == null) {
             return null;

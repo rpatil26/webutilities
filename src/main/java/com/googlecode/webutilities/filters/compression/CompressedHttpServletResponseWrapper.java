@@ -287,6 +287,11 @@ public class CompressedHttpServletResponseWrapper extends WebUtilitiesResponseWr
     }
 
     @Override
+    public void setContentLengthLong(long contentLength) {
+        this.setContentLength(contentLength);
+    }
+
+    @Override
     public void setContentType(String contentType) {
         httpResponse.setContentType(contentType);
         mimeIgnored = ignoreAcceptContext != null && !ignoreAcceptContext.isMIMEAccepted(contentType);
