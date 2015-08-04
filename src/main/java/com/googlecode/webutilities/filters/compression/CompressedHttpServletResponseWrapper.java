@@ -206,11 +206,7 @@ public class CompressedHttpServletResponseWrapper extends WebUtilitiesResponseWr
 
     private void setETagHeader() {
         if (savedETag != null) {
-            if (compressing) {
-                httpResponse.setHeader(HTTP_ETAG_HEADER, savedETag + '-' + compressedContentEncoding);
-            } else {
-                httpResponse.setHeader(HTTP_ETAG_HEADER, savedETag);
-            }
+            httpResponse.setHeader(HTTP_ETAG_HEADER, savedETag);
         }
     }
 
