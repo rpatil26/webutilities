@@ -443,31 +443,37 @@ public class JSCSSMergeServlet extends HttpServlet {
      * @param context     - ServletContext
      * @param contextPath - APP context path or any custom configured context path
      * @param cssFilePath - css file path
-     * @param line        - single line css file
+     * @param input        - single line css file
      * @return - processed line with img path if it had any replaced to appropriate path
      */
-    private String processCSSLine(ServletContext context, String contextPath, String cssFilePath, StringBuffer line) {
-        Matcher matcher = CSS_IMG_URL_PATTERN.matcher(line);
+    private String processCSSLine(ServletContext context, String contextPath, String cssFilePath, StringBuffer input) {
+        Matcher matcher = CSS_IMG_URL_PATTERN.matcher(input);
         String cssRealPath = context.getRealPath(cssFilePath);
+        StringBuffer output = new StringBuffer();
         while (matcher.find()) {
             String refImgPath = matcher.group(1);
             if (!isProtocolURL(refImgPath)) { //ignore absolute protocol paths
+                String fullMatch = matcher.group(0);
+                LOGGER.debug("before match {}", fullMatch);
                 String resolvedImgPath = refImgPath;
                 if (!refImgPath.startsWith("/")) {
                     resolvedImgPath = buildProperPath(getParentPath(cssFilePath), refImgPath);
                 }
                 String imgRealPath = context.getRealPath(resolvedImgPath);
-                int offset = line.indexOf(refImgPath);
-                line.replace(
-                        offset, //from
-                        offset + refImgPath.length(), //to
-                        contextPath + (this.turnOffUrlFingerPrinting ? resolvedImgPath : addFingerPrint(buildETagForResource(resolvedImgPath, context), resolvedImgPath))
-                );
                 updateReferenceMap(cssRealPath, imgRealPath);
-                matcher.reset(line.subSequence(offset + refImgPath.length(), line.length()));
+                LOGGER.trace("before path {}", resolvedImgPath);
+                String fullPath = contextPath + (this.turnOffUrlFingerPrinting ? resolvedImgPath
+                        : addFingerPrint(buildETagForResource(resolvedImgPath, context),
+                        resolvedImgPath));
+                LOGGER.trace("after path {}", fullPath);
+                String matchReplace = fullMatch.replace(refImgPath, fullPath);
+                LOGGER.debug("after replace {}", matchReplace);
+                matcher.appendReplacement(output, matchReplace);
             }
         }
-        return line.toString();
+        matcher.appendTail(output);
+        input.setLength(0);
+        return output.toString();
     }
 
     /**
