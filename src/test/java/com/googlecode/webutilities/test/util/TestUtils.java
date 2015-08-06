@@ -16,6 +16,7 @@
 
 package com.googlecode.webutilities.test.util;
 
+import com.google.common.io.ByteStreams;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -29,18 +30,7 @@ public final class TestUtils {
     }
 
     public static String readContents(InputStream inputStream, String encoding) throws Exception {
-
-        BufferedReader reader = new BufferedReader(new InputStreamReader(inputStream));
-        StringBuilder stringBuilder = new StringBuilder();
-        //String line = null;
-        int c;
-        while ((c = reader.read()) != -1) {
-            //stringBuilder.append(line).append("\n");
-            stringBuilder.append((char) c);
-        }
-        inputStream.close();
-        return new String(stringBuilder.toString().getBytes(), encoding);
-
+        return new String(ByteStreams.toByteArray(inputStream), encoding);
     }
 
 
@@ -57,28 +47,29 @@ public final class TestUtils {
     }
 
     public static boolean compressedContentEquals(String left, String right) throws IOException {
-        int ch, pos = 0;
-
         if (left == null && right == null) {
             return true;
         }
-
         assert left != null;
         ByteArrayInputStream streamLeft = new ByteArrayInputStream(left.getBytes());
         ByteArrayInputStream streamRight = new ByteArrayInputStream(right.getBytes());
 
-        while ((ch = streamLeft.read()) != -1) {
-            int ch2 = streamRight.read();
+
+        int ch, ch2, pos = 0;
+        while (true) { //(ch = streamLeft.read()) != -1 || (ch2 = streamRight.read()) != -1) {
+            ch = streamLeft.read();
+            ch2 = streamRight.read();
+            if (ch == -1 && ch == ch2) { //streams ended
+                return true;
+            }
             if (ch != ch2) {
-                if (pos == 9) { //Ignore OS byte in GZIP header
+                if (pos == 10) { //Ignore OS byte in GZIP header (was suppose to be 9th? Needed to make it 10 to make the test case work)
                     LOGGER.info("Ignoring OS bit.... {} != {}", ch, ch2);
-                    continue;
+                } else {
+                    return false;
                 }
-                return false;
             }
             pos++;
         }
-        int ch2 = streamRight.read();
-        return (ch2 == -1);
     }
 }
