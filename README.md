@@ -23,10 +23,10 @@ It is said that 80% of the end-user response time is spent on the front-end. To 
 
 ### Get started
 
-*   Refer [Getting Started wiki] (https://github.com/rpatil26/webutilities/wiki/Getting-Started)
+*   Refer [Getting Started wiki] (https://github.com/rpatil26/webutilities/wiki/)
 *   Configure your `web.xml` with [chain of filters] (https://github.com/rpatil26/webutilities/wiki/chaining) accordingly. 
    
-For more examples and step by step Guide, Visit [Wiki](https://github.com/rpatil26/webutilities/wiki/Getting-Started). For any issues or have feature suggestions, report them [here] (https://github.com/rpatil26/webutilities/issues).
+For more examples and step by step Guide, Visit [Wiki](https://github.com/rpatil26/webutilities/wiki/). For any issues or have feature suggestions, report them [here] (https://github.com/rpatil26/webutilities/issues).
 
 ### Dependencies
 
