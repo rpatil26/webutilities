@@ -19,7 +19,7 @@ It is said that 80% of the end-user response time is spent on the front-end. To 
 *   Minify Inline CSS and JS code blocks
 *   Add Character Encoding to your response
 *   Server compressed contents (gzip/compress/deflate)
-*   Cache responses to speed loading by avoiding reprocessing Let's see how to apply those best practices in your application and speed it up :)
+*   Cache responses to speed loading by avoiding reprocessing 
 
 ### Get started
 
@@ -31,4 +31,11 @@ For more examples and step by step Guide, Visit [Wiki](https://github.com/rpatil
 ### Dependencies
 
 WebUtilities uses Maven to manage the dependencies. Please refer the maven [Artifact Details] (http://search.maven.org/#artifactdetails%7Ccom.googlecode.webutilities%7Cwebutilities%7C0.0.7%7Cjar) for the list of dependencies.
+
+### Difference 
+| Without Webutilities  | With Webutilities |
+| ------------- | ------------- |
+|![](http://rawgit.com/rpatil26/webutilities/gh-pages/images/before.png)|![](http://rawgit.com/rpatil26/webutilities/gh-pages/images/after.png)|
+
+
 
