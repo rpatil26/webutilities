@@ -1,16 +1,15 @@
 webutilities
 ============
+Java library that helps you to **speed up and improve client side performance** of your JEE web application.
 
 [![Maven Central](https://maven-badges.herokuapp.com/maven-central/com.googlecode.webutilities/webutilities/badge.svg)](https://maven-badges.herokuapp.com/maven-central/com.googlecode.webutilities/webutilities/)
 [![License](https://img.shields.io/badge/license-Apache_2-blue.svg?style=flat)](https://github.com/rpatil26/webutilities/blob/master/LICENSE)
 
-Java library that helps you to speed up and improve client side performance of your JEE web application.
-
 ### Introduction
 
-Client side performance is important for better user experience. Optimizing and efficiently serving the static resources (JS, HTML, CSS, Images etc.) significantly increases client side performance. This Java Library (WebUtilities) provides web components to help you speed up Front-End of your J2EE application.
+Client side performance is important for better user experience. Optimizing and efficiently serving the static resources (JS, HTML, CSS, Images etc.) significantly increases client side performance. This Java Library provides web components to help you speed up Front-End of your J2EE application.
 
-It is said that 80% of the end-user response time is spent on the front-end. To make the front-end efficient and friendly to the browser, various performance practices have been suggested. We can measure page performance using tools such as YSlow or Page Speed. These tools validate page against the best practices and give the performance ratings/grade. WebUtilities provides inbuilt components to apply some of those best practices in your web application with minimal change to speed it up and get higher performance score. Below screenshots shows the difference it makes.
+It is said that 80% of the end-user response time is spent on the front-end. To make the front-end efficient and friendly to the browser, various [Performance Practices](http://developer.yahoo.com/performance/rules.html) have been suggested. We can measure page performance using tools such as [YSlow](http://developer.yahoo.com/yslow/) or [Page Speed](http://code.google.com/speed/page-speed/). These tools validate page against the best practices and give the performance ratings/grade. WebUtilities provides inbuilt J2EE components to apply some of those best practices in your web application with minimal change to speed it up and get higher performance score. 
 
 ### Features
 
@@ -24,10 +23,12 @@ It is said that 80% of the end-user response time is spent on the front-end. To 
 
 ### Get started
 
-*   Refer Wiki for documentation
-*   Configure your web.xml with chain of filters accordingly. For Examples and step by step Guide, Visit Wiki. For any issues or have feature suggestions, report them here.
+*   Refer [Wiki](https://github.com/rpatil26/webutilities/wiki) for documentation
+*   Configure your `web.xml` with [chain of filters](#chain) accordingly. 
+   
+For more examples and step by step Guide, Visit [Wiki](https://github.com/rpatil26/webutilities/wiki). For any issues or have feature suggestions, report them [here] (https://github.com/rpatil26/webutilities/issues).
 
 ### Dependencies
 
-WebUtilities uses Maven to manage the dependencies. Please refer POM details for the list of dependencies.
+WebUtilities uses Maven to manage the dependencies. Please refer the maven [Artifact Details] (http://search.maven.org/#artifactdetails%7Ccom.googlecode.webutilities%7Cwebutilities%7C0.0.7%7Cjar) for the list of dependencies.
 
