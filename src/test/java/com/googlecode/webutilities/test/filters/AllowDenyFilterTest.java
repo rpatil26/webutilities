@@ -16,31 +16,37 @@
 
 package com.googlecode.webutilities.test.filters;
 
+import com.googlecode.webutilities.filters.AllowDenyFilter;
 import com.googlecode.webutilities.filters.YUIMinFilter;
 import com.googlecode.webutilities.servlets.JSCSSMergeServlet;
+import com.mockrunner.mock.web.MockHttpServletResponse;
 import org.junit.Assert;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-public class YUIMinFilterTest extends AbstractFilterTest {
+import java.util.Map;
+
+public class AllowDenyFilterTest extends AbstractFilterTest {
+
+    private static final int NO_STATUS_CODE = -99999;
 
     private JSCSSMergeServlet jscssMergeServlet = new JSCSSMergeServlet();
 
-    private YUIMinFilter yuiMinFilter = new YUIMinFilter();
+    private AllowDenyFilter allowDenyFilter;
 
-    private static final Logger LOGGER = LoggerFactory.getLogger(YUIMinFilterTest.class.getName());
+    private static final Logger LOGGER = LoggerFactory.getLogger(AllowDenyFilterTest.class.getName());
 
     @Override
     protected String getTestPropertiesName() {
-        return YUIMinFilterTest.class.getSimpleName() + ".properties";
+        return AllowDenyFilterTest.class.getSimpleName() + ".properties";
     }
 
     @Override
     public void prepare() {
 
         servletTestModule.setServlet(jscssMergeServlet, true);
-
-        servletTestModule.addFilter(yuiMinFilter, true);
+        allowDenyFilter = new AllowDenyFilter();
+        servletTestModule.addFilter(allowDenyFilter, true);
         servletTestModule.setDoChain(true);
 
     }
@@ -49,15 +55,20 @@ public class YUIMinFilterTest extends AbstractFilterTest {
     public void executeCurrentTestLogic() throws Exception {
         servletTestModule.doFilter();
 
-        String actualOutput = servletTestModule.getOutput();
+        MockHttpServletResponse response = webMockObjectFactory.getMockResponse();
 
-        Assert.assertNotNull(actualOutput);
+        int expectedStatusCode = this.getExpectedStatus(NO_STATUS_CODE);
+        int actualStatusCode = response.getErrorCode();
+        if (expectedStatusCode != NO_STATUS_CODE) {
+            Assert.assertEquals(expectedStatusCode, actualStatusCode);
+        }
 
-        String expectedOutput = this.getExpectedOutput();
+        Map<String, String> expectedHeaders = this.getExpectedHeaders();
+        for (String name : expectedHeaders.keySet()) {
+            String value = expectedHeaders.get(name);
+            Assert.assertEquals(value, response.getHeader(name));
+        }
 
-        Assert.assertEquals(expectedOutput.trim(), actualOutput.trim());
-
-        Assert.assertEquals("" + actualOutput.length(), webMockObjectFactory.getMockResponse().getHeader("Content-Length"));
     }
 
 }

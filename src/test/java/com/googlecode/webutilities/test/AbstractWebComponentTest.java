@@ -1,11 +1,11 @@
 /*
- * Copyright 2010-2014 Rajendra Patil
+ * Copyright 2010-2015 Rajendra Patil
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
  * You may obtain a copy of the License at
  *
- *  http://www.apache.org/licenses/LICENSE-2.0
+ * http://www.apache.org/licenses/LICENSE-2.0
  *
  * Unless required by applicable law or agreed to in writing, software
  * distributed under the License is distributed on an "AS IS" BASIS,
@@ -122,11 +122,17 @@ public abstract class AbstractWebComponentTest {
                 }
             }
         }
-
+        //remote IP
+        String remoteIp = properties.getProperty(this.currentTestNumber + ".test.request.ip");
+        if (remoteIp != null && !remoteIp.trim().equals("")) {
+            webMockObjectFactory.getMockRequest().setRemoteAddr(remoteIp);
+        }
+        //String remoteHost = properties.getProperty(this.currentTestNumber + ".test.request.host");
         String userAgent = properties.getProperty(this.currentTestNumber + ".test.request.userAgent");
         if (userAgent != null && !userAgent.trim().equals("")) {
             webMockObjectFactory.getMockRequest().addHeader(HTTP_USER_AGENT_HEADER, userAgent);
         }
+
         String accept = properties.getProperty(this.currentTestNumber + ".test.request.accept");
         if (accept != null && !accept.trim().equals("")) {
             webMockObjectFactory.getMockRequest().addHeader(HTTP_ACCEPT_ENCODING_HEADER, accept);
