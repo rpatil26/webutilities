@@ -30,7 +30,7 @@ For more examples and step by step Guide, Visit [Wiki](https://github.com/rpatil
 
 ### Dependencies
 
-WebUtilities uses Maven to manage the dependencies. Please refer the maven [Artifact Details] (http://search.maven.org/#artifactdetails%7Ccom.googlecode.webutilities%7Cwebutilities%7C0.0.7%7Cjar) for the list of dependencies.
+WebUtilities uses Maven to manage the dependencies. Please refer the maven [Artifact Details] (https://maven-badges.herokuapp.com/maven-central/com.googlecode.webutilities/webutilities/) for the list of dependencies.
 
 ### Difference 
 | Without Webutilities  | With Webutilities |
