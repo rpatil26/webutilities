@@ -29,10 +29,10 @@
     <packaging>jar</packaging>
 
     <name>webutilities</name>
-    <description>WebUtilities is the Java library that helps you to speed up and improve client side performance of your
-        J2EE web application.
+    <description>
+        Java library that helps you to speed up and improve client side performance of your J2EE web application.
     </description>
-    <url>http://code.google.com/p/webutilities/</url>
+    <url>http://rpatil26.github.io/webutilities/</url>
     <licenses>
         <license>
             <name>The Apache Software License, Version 2.0</name>
@@ -46,8 +46,8 @@
         <url>git@github.com:rpatil26/webutilities.git</url>
     </scm>
     <issueManagement>
-        <system>Google Code</system>
-        <url>http://code.google.com/p/webutilities/issues/list</url>
+        <system>Github</system>
+        <url>https://github.com/rpatil26/webutilities/issues</url>
     </issueManagement>
     <developers>
         <developer>
@@ -71,36 +71,6 @@
             <url>https://oss.sonatype.org/service/local/staging/deploy/maven2/</url>
         </repository>
     </distributionManagement>
-    <!--repositories>
-        <repository>
-            <id>jboss-public-repository-group</id>
-            <name>JBoss Public Maven Repository Group</name>
-            <url>https://repository.jboss.org/nexus/content/groups/public-jboss/</url>
-            <layout>default</layout>
-            <releases>
-                <enabled>true</enabled>
-                <updatePolicy>never</updatePolicy>
-            </releases>
-            <snapshots>
-                <enabled>true</enabled>
-                <updatePolicy>never</updatePolicy>
-            </snapshots>
-        </repository>
-        <repository>
-            <id>jboss-thirdparty-repository-group</id>
-            <name>JBoss Thirdparty Releases</name>
-            <url>https://repository.jboss.org/nexus/content/repositories/thirdparty-releases</url>
-            <layout>default</layout>
-            <releases>
-                <enabled>true</enabled>
-                <updatePolicy>never</updatePolicy>
-            </releases>
-            <snapshots>
-                <enabled>true</enabled>
-                <updatePolicy>never</updatePolicy>
-            </snapshots>
-        </repository>
-    </repositories-->
     <dependencies>
         <!-- COMPILE -->
         <dependency>
@@ -191,7 +161,6 @@
             <version>2.0.3</version>
             <optional>true</optional>
         </dependency>
-
     </dependencies>
     <profiles>
         <profile>
