@@ -26,25 +26,25 @@ public class IpSubnet {
     private long network;
 
     private long netmask;
+    //Pattern Credit: http://blog.markhatton.co.uk/2011/03/15/regular-expressions-for-ip-addresses-cidr-ranges-and-hostnames/
+    private static final Pattern PATTERN = Pattern.compile("^((([0-9]|[1-9][0-9]|1[0-9]{2}|2[0-4][0-9]|25[0-5])\\.){3}([0-9]|[1-9][0-9]|1[0-9]{2}|2[0-4][0-9]|25[0-5]))(?:\\/([0-9]|[1-2][0-9]|3[0-2]))?$");
 
-    private static final Pattern PATTERN = Pattern.compile("((?:\\d|\\.)+)(?:/(\\d{1,2}))?");
-
-    public IpSubnet(String ipRange) throws UnknownHostException {
+    public IpSubnet(String ipRange) throws UnknownHostException, IllegalArgumentException {
         ipRange = ipRange.trim();
         Matcher matcher = PATTERN.matcher(ipRange);
         if (matcher.matches()) {
             String networkPart = matcher.group(1);
-            String cidrPart = matcher.group(2);
+            String cidrPart = matcher.group(5);
             init(networkPart, cidrPart);
         } else {
-            init(ipRange, "32");
+            throw new IllegalArgumentException("Invalid IPV4 CIDR Subnet Mask Format:" + ipRange);
         }
     }
 
     private void init(String networkPart, String cidrPart) throws UnknownHostException {
 
         long netmask = 0;
-        int cidr = cidrPart == null ? 32 : Integer.parseInt(cidrPart);
+        int cidr = cidrPart == null || cidrPart.trim().length() < 1 ? 32 : Integer.parseInt(cidrPart);
         for (int pos = 0; pos < 32; ++pos) {
             if (pos >= 32 - cidr) {
                 netmask |= (1L << pos);

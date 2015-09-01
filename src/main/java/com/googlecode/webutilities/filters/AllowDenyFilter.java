@@ -44,7 +44,8 @@ public class AllowDenyFilter extends AbstractFilter {
 
     private int errorCodeToReturn = HttpServletResponse.SC_FORBIDDEN;
 
-    private static final String INIT_PARAM_ALLOW_FROM = "allowFrom"; //default "all" or CIDR Subnet Mask
+    //http://www.enterprisenetworkingplanet.com/netsp/article.php/3566521/Networking-101-Understanding-Subnets-and-CIDR.htm
+    private static final String INIT_PARAM_ALLOW_FROM = "allowFrom"; //default "all" or CIDR Subnet Mask. x.x.x.x/y where y is (0-32)
 
     private static final String INIT_PARAM_DENY_FROM = "denyFrom"; // default "" (none) or CIDR Subnet Mask
 
@@ -62,15 +63,18 @@ public class AllowDenyFilter extends AbstractFilter {
         try {
             this.buildSubjects();
         } catch (UnknownHostException uhe) {
-            LOGGER.error("Init failed", uhe);
-            throw new ServletException("Invalid Configuration", uhe);
+            LOGGER.error("Init failed:", uhe);
+            throw new ServletException("Unknown host", uhe);
+        } catch (IllegalArgumentException uhe) {
+            LOGGER.error("Init failed:", uhe);
+            throw new ServletException("Invalid allow/deny formats", uhe);
         }
 
         LOGGER.debug("Filter initialized with: {}:{}, {}:{}", INIT_PARAM_ALLOW_FROM, allowFrom, INIT_PARAM_DENY_FROM, denyFrom);
 
     }
 
-    private void buildSubjects() throws UnknownHostException {
+    private void buildSubjects() throws IllegalArgumentException, UnknownHostException {
         String[] tokens;
         if (allowFrom != null) {
             tokens = allowFrom.split("\\s+");
