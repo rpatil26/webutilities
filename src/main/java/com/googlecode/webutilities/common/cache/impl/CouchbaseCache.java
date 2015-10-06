@@ -27,7 +27,7 @@ import com.googlecode.webutilities.common.cache.CacheConfig;
 import java.io.Serializable;
 
 /**
- * Cache implemented using Redis Cache
+ * Cache implemented using CouchbaseCache Cache
  */
 public class CouchbaseCache<K, V> implements Cache<K, V> {
 
