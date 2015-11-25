@@ -16,15 +16,21 @@
 
 package com.googlecode.webutilities.test.filters;
 
+import com.googlecode.webutilities.common.Constants;
 import com.googlecode.webutilities.filters.YUIMinFilter;
 import com.googlecode.webutilities.servlets.JSCSSMergeServlet;
 import org.junit.Assert;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
+import javax.servlet.ServletException;
+import javax.servlet.http.HttpServletRequest;
+import javax.servlet.http.HttpServletResponse;
+import java.io.IOException;
+
 public class YUIMinFilterTest extends AbstractFilterTest {
 
-    private JSCSSMergeServlet jscssMergeServlet = new JSCSSMergeServlet();
+    private JSCSSMergeServlet jscssMergeServlet = new MockJSCSSMergeServlet();
 
     private YUIMinFilter yuiMinFilter = new YUIMinFilter();
 
@@ -60,4 +66,38 @@ public class YUIMinFilterTest extends AbstractFilterTest {
         Assert.assertEquals("" + actualOutput.length(), webMockObjectFactory.getMockResponse().getHeader("Content-Length"));
     }
 
+}
+
+class MockJSCSSMergeServlet extends com.googlecode.webutilities.servlets.JSCSSMergeServlet {
+
+    private static final String TEST_JS_EXT = ".testjs";
+
+    private static final String TEST_CSS_EXT = ".testcss";
+
+    private static final String TEST_JSON_EXT = ".testjson";
+
+
+    @Override
+    protected void doGet(HttpServletRequest req, HttpServletResponse resp)
+            throws ServletException, IOException {
+        String url = req.getRequestURI();
+        super.doGet(req, resp);
+        if (url.endsWith(TEST_JS_EXT)) {
+            resp.setContentType(Constants.MIME_JS);
+        }
+        if (url.endsWith(TEST_CSS_EXT)) {
+            resp.setContentType(Constants.MIME_CSS);
+        }
+        if (url.endsWith(TEST_JSON_EXT)) {
+            resp.setContentType(Constants.MIME_JSON);
+        }
+    }
+
+    @Override
+    protected boolean isCSS(String resourcePath) {
+        if (resourcePath.endsWith(TEST_CSS_EXT)) {
+            return true;
+        }
+        return super.isCSS(resourcePath);
+    }
 }

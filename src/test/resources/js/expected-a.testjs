@@ -1,0 +1,1 @@
+var Person=function(a){this.getName=function(){return a}};

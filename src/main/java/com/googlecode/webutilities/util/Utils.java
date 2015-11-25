@@ -117,15 +117,7 @@ public final class Utils {
      * @return extension .css or .js etc.
      */
     public static String detectExtension(String requestURI) { //!TODO case sensitivity? http://server/context/path/a.CSS
-        String requestURIExtension = null;
-        if (requestURI.endsWith(EXT_JS)) {
-            requestURIExtension = EXT_JS;
-        } else if (requestURI.endsWith(EXT_JSON)) {
-            requestURIExtension = EXT_JSON;
-        } else if (requestURI.endsWith(EXT_CSS)) {
-            requestURIExtension = EXT_CSS;
-        }
-        return requestURIExtension;
+        return requestURI.substring(requestURI.lastIndexOf("."));
     }
 
     /**

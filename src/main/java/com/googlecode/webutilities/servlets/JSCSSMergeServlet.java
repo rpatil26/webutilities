@@ -375,7 +375,7 @@ public class JSCSSMergeServlet extends HttpServlet {
                     missingResourcesCount++;
                     continue;
                 }
-                if (resourcePath.endsWith(EXT_CSS) && autoCorrectUrlsInCSS) { //Need to deal with images url in CSS
+                if (this.isCSS(resourcePath) && autoCorrectUrlsInCSS) { //Need to deal with images url in CSS
 
                     contentLength += this.processCSS(contextPath, resourcePath, is, outputStream);
 
@@ -413,6 +413,10 @@ public class JSCSSMergeServlet extends HttpServlet {
 
         }
         return new ProcessedResult(missingResourcesCount, contentLength);
+    }
+
+    protected boolean isCSS(String resourcePath) {
+        return resourcePath != null && resourcePath.endsWith(EXT_CSS);
     }
 
     /**

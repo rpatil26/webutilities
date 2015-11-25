@@ -577,16 +577,12 @@
 	"expanded_folders":
 	[
 		"/Users/i073207/dev/opensource/webutilities",
-		"/Users/i073207/dev/opensource/webutilities/src",
-		"/Users/i073207/dev/opensource/webutilities/src/main",
-		"/Users/i073207/dev/opensource/webutilities/src/main/java",
-		"/Users/i073207/dev/opensource/webutilities/src/main/java/com",
-		"/Users/i073207/dev/opensource/webutilities/src/main/java/com/googlecode",
-		"/Users/i073207/dev/opensource/webutilities/src/main/java/com/googlecode/webutilities",
-		"/Users/i073207/dev/opensource/webutilities/src/main/java/com/googlecode/webutilities/common"
+		"/Users/i073207/dev/opensource/webutilities/src"
 	],
 	"file_history":
 	[
+		"/Users/i073207/dev/opensource/webutilities/src/main/java/com/googlecode/webutilities/common/cache/impl/CouchbaseCache.java",
+		"/Users/i073207/dev/opensource/webutilities/src/main/java/com/googlecode/webutilities/common/cache/impl/RedisCache.java",
 		"/Users/i073207/dev/opensource/webutilities/webutilities.sublime-project",
 		"/Users/i073207/dev/opensource/webutilities/src/main/java/com/googlecode/webutilities/modules/ne/AccessModule.java",
 		"/Users/i073207/Library/Application Support/Sublime Text 3/Packages/Default/Preferences.sublime-settings",
@@ -712,13 +708,11 @@
 		"/Users/i073207/dev/opensource/nin/node_modules/forever/node_modules/nconf/test/common-test.js",
 		"/Users/i073207/dev/opensource/nin/node_modules/jscs/node_modules/glob/common.js",
 		"/Users/i073207/dev/opensource/nin/node_modules/redis/lib/commands.js",
-		"/Users/i073207/dev/opensource/nin/node_modules/connect-mongo/lib/connect-mongo.js",
-		"/Users/i073207/dev/opensource/nin/public/lib/bootstrap/less/buttons.less",
-		"/Users/i073207/dev/opensource/nin/bower.json"
+		"/Users/i073207/dev/opensource/nin/node_modules/connect-mongo/lib/connect-mongo.js"
 	],
 	"find":
 	{
-		"height": 23.0
+		"height": 35.0
 	},
 	"find_in_files":
 	{
@@ -733,6 +727,7 @@
 		"case_sensitive": false,
 		"find_history":
 		[
+			"redis",
 			"PrimaryKey",
 			"proxy",
 			"_viewPanel",
@@ -859,8 +854,7 @@
 			"get",
 			"good",
 			"bad ",
-			" a lot",
-			"get"
+			" a lot"
 		],
 		"highlight": true,
 		"in_selection": false,
