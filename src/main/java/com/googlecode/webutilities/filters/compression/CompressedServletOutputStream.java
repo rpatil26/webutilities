@@ -51,9 +51,9 @@ public class CompressedServletOutputStream extends ServletOutputStream {
             return uncompressedStream;
         }
         if (compressed == null) {
-            compressed = encodedStreamsFactory.getCompressedStream(uncompressedStream);
             //we are switching to compression here, write compression headers
             compressedResponseWrapper.useCompression();
+            compressed = encodedStreamsFactory.getCompressedStream(uncompressedStream);
         }
         return compressed.getCompressedOutputStream();
     }
