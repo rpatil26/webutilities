@@ -2,7 +2,7 @@ webutilities
 ============
 Java library that helps you to **speed up and improve client side performance** of your JEE web application.
 
-[![Maven Central](https://maven-badges.herokuapp.com/maven-central/com.googlecode.webutilities/webutilities/badge.svg)](https://maven-badges.herokuapp.com/maven-central/com.googlecode.webutilities/webutilities/)
+[![Build Status](https://travis-ci.org/rpatil26/webutilities.svg?branch=master)](https://travis-ci.org/rpatil26/webutilities) [![Maven Central](https://maven-badges.herokuapp.com/maven-central/com.googlecode.webutilities/webutilities/badge.svg)](https://maven-badges.herokuapp.com/maven-central/com.googlecode.webutilities/webutilities/)
 [![License](https://img.shields.io/badge/license-Apache_2-blue.svg?style=flat)](https://github.com/rpatil26/webutilities/blob/master/LICENSE)
 
 ### Introduction
