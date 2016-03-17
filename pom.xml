@@ -115,7 +115,19 @@
         </dependency>
         <dependency>
             <groupId>com.mockrunner</groupId>
-            <artifactId>mockrunner-all</artifactId>
+            <artifactId>mockrunner-core</artifactId>
+            <version>1.1.1</version>
+            <scope>test</scope>
+        </dependency>
+        <dependency>
+            <groupId>com.mockrunner</groupId>
+            <artifactId>mockrunner-servlet</artifactId>
+            <version>1.1.1</version>
+            <scope>test</scope>
+        </dependency>
+        <dependency>
+            <groupId>com.mockrunner</groupId>
+            <artifactId>mockrunner-tag</artifactId>
             <version>1.1.1</version>
             <scope>test</scope>
         </dependency>
