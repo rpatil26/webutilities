@@ -25,10 +25,7 @@ import java.net.URLConnection;
 import java.security.MessageDigest;
 import java.security.NoSuchAlgorithmException;
 import java.text.SimpleDateFormat;
-import java.util.ArrayList;
-import java.util.Date;
-import java.util.LinkedList;
-import java.util.List;
+import java.util.*;
 import java.util.regex.Matcher;
 
 import static com.googlecode.webutilities.common.Constants.*;
@@ -519,6 +516,31 @@ public final class Utils {
             return path.substring(0, lastIndex);
         }
         return PATH_ROOT;
+    }
+
+    /**
+     * A utility method to build headers map from the string. Multiple headers in the string would be separated by |
+     * and the header key and value/s would be separated by :
+     *
+     * Example String: X-Requested-By: applicationOne | Accepts: *.* | Custom-Header: Custom Value
+     *
+     * @param headerString the string to parse and build the map from. Ex. HeaderName: value | HeaderName: value
+     * @return Map the map of headers where key is string and value is also string
+     */
+
+    public static Map<String, String> buildHeadersMapFromString(String headerString) {
+        Map<String, String> headersMap = new HashMap<String, String>();
+        if (headerString != null) {
+            String[] headers = headerString.split("\\|");
+            for (String header : headers) {
+                String[] keyValPair = header.split(":");
+                if (keyValPair.length == 2) {
+                    headersMap.put(keyValPair[0], keyValPair[1]);
+                }
+            }
+        }
+        return headersMap;
+
     }
 
     private Utils() {
