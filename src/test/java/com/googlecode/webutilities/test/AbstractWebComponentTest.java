@@ -84,8 +84,11 @@ public abstract class AbstractWebComponentTest {
         if (value != null && !value.trim().equals("")) {
             String[] params = value.split(",");
             for (String param : params) {
-                String[] keyAndValue = param.split(":");
-                setupInitParam(keyAndValue[0], keyAndValue[1]);
+                int index = param.indexOf(":");
+                String[] keyAndValue = new String[]{
+                        param.substring(0, index), param.substring(index + 1)
+                };//split(":");
+                setupInitParam(keyAndValue[0].trim(), keyAndValue[1].trim());
             }
         }
     }
@@ -118,10 +121,16 @@ public abstract class AbstractWebComponentTest {
                 webMockObjectFactory.getMockRequest().setQueryString(uriAndQuery[1]);
                 for (String param : params) {
                     String[] nameValue = param.split("=");
-                    setupRequestParameter(nameValue[0], nameValue[1]);
+                    setupRequestParameter(nameValue[0].trim(), nameValue[1].trim());
                 }
             }
         }
+        //Servlet path
+        String servletPath = properties.getProperty(this.currentTestNumber + ".test.request.servletPath");
+        if (servletPath != null && !servletPath.trim().equals("")) {
+            webMockObjectFactory.getMockRequest().setServletPath(servletPath);
+        }
+
         //remote IP
         String remoteIp = properties.getProperty(this.currentTestNumber + ".test.request.ip");
         if (remoteIp != null && !remoteIp.trim().equals("")) {
@@ -150,7 +159,7 @@ public abstract class AbstractWebComponentTest {
                     String res = nameValue[1].replaceAll(".*lastModifiedOf\\s*\\((.*)\\)", "$1");
                     nameValue[1] = Utils.forHeaderDate(new File(webMockObjectFactory.getMockServletContext().getRealPath(res)).lastModified());
                 }
-                webMockObjectFactory.getMockRequest().addHeader(nameValue[0], nameValue[1]);
+                webMockObjectFactory.getMockRequest().addHeader(nameValue[0].trim(), nameValue[1].trim());
             }
         }
     }
@@ -168,13 +177,13 @@ public abstract class AbstractWebComponentTest {
         for (String header : headersString) {
             String[] nameValue = header.split("=");
             if (nameValue.length == 2 && nameValue[1].contains("hashOf")) {
-                String res = nameValue[1].replaceAll(".*hashOf\\s*\\((.*)\\)", "$1");
+                String res = nameValue[1].trim().replaceAll(".*hashOf\\s*\\((.*)\\)", "$1");
                 nameValue[1] = Utils.buildETagForResource(res, webMockObjectFactory.getMockServletContext());
             } else if (nameValue.length == 2 && nameValue[1].contains("lastModifiedOf")) {
-                String res = nameValue[1].replaceAll(".*lastModifiedOf\\s*\\((.*)\\)", "$1");
+                String res = nameValue[1].trim().replaceAll(".*lastModifiedOf\\s*\\((.*)\\)", "$1");
                 nameValue[1] = Utils.forHeaderDate(new File(webMockObjectFactory.getMockServletContext().getRealPath(res)).lastModified());
             }
-            headersMap.put(nameValue[0], nameValue.length == 2 ? nameValue[1] : null);
+            headersMap.put(nameValue[0].trim(), nameValue.length == 2 ? nameValue[1].trim() : null);
         }
         return headersMap;
     }

@@ -35,7 +35,24 @@ import java.util.Map;
 import static com.googlecode.webutilities.util.Utils.*;
 
 /**
- * Servlet that allows proxying the request to another remote server
+ * Servlet that allows proxying the requests to another external remote service/API. This is useful when the target API
+ * doesn't support CORS or JSONP. In such cases the request to remote third-party service has to be routed through our
+ * own server to make it look like we are serving it from our own server system.
+ *
+ * This Servlet supports the configurable <code>init-params</code> to dynamically inject custom headers in the
+ * request (<code>injectRequestHeaders</code>) before requesting the target service. This is useful to send custom
+ * authorization or token request headers. Similarly this Servlet can return custom response headers
+ * (injectResponseHeaders) back to the requesting client. Currently these headers are static and whatever is defined as
+ * the value for these will be set.
+ *
+ * <code>baseUri</code> init-param is the base URL for the target service/API. Any path after the mapping of this
+ * servlet will be appended to the baseUri to build the target URL. Also any query parameters and request headers from
+ * client will be passed as it to the target URL. If additional request headers parameter are specified
+ * (<code>injectRequestHeaders</code>), those will also be passed to target service.
+ *
+ *
+ * @author rpatil
+ * @version 1.0
  */
 public class WebProxyServlet extends HttpServlet {
 
@@ -109,7 +126,8 @@ public class WebProxyServlet extends HttpServlet {
         String thisServletPath = req.getServletPath();
         String query = req.getQueryString();
         String url = req.getRequestURI();
-        // Get the target URL
+
+        // Build the target URL
         String targetUrl = this.baseUri + (url.substring(url.indexOf(thisServletPath) + thisServletPath.length()));
         targetUrl += "?" + query;
 
