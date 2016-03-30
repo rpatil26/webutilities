@@ -535,12 +535,11 @@ public final class Utils {
             for (String header : headers) {
                 String[] keyValPair = header.split(":");
                 if (keyValPair.length == 2) {
-                    headersMap.put(keyValPair[0], keyValPair[1]);
+                    headersMap.put(keyValPair[0].trim(), keyValPair[1].trim());
                 }
             }
         }
         return headersMap;
-
     }
 
     private Utils() {
