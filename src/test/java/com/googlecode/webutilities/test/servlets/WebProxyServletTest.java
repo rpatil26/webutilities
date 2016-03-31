@@ -114,14 +114,13 @@ public class WebProxyServletTest extends AbstractServletTest {
             Assert.assertEquals(value, response.getHeader(name));
         }
 
-        if (actualStatusCode != HttpServletResponse.SC_NOT_MODIFIED) {
-            String actualOutput = servletTestModule.getOutput();
-            String outputContains = properties.getProperty(this.currentTestNumber + ".test.expected.outputContains");
+        String actualOutput = servletTestModule.getOutput();
+        String outputContains = properties.getProperty(this.currentTestNumber + ".test.expected.outputContains");
 
-            Assert.assertNotNull(actualOutput);
+        Assert.assertNotNull(actualOutput);
 
-            Assert.assertTrue(actualOutput.contains(outputContains));
-        }
+        Assert.assertTrue(actualOutput.contains(outputContains));
+
     }
 
 }
