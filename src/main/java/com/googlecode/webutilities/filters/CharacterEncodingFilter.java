@@ -137,7 +137,7 @@ public class CharacterEncodingFilter extends AbstractFilter {
             }
         }
         String extensionOrFile = detectExtension(url);
-        if (extensionOrFile == null) {
+        if (extensionOrFile.isEmpty()) {
             List<String> resources = findResourcesToMerge(req.getContextPath(), url);
             extensionOrFile = resources.get(0);
         }

@@ -41,7 +41,7 @@ public abstract class EncodedStreamsFactory {
 
         if (SUPPORTED_ENCODINGS != null) return SUPPORTED_ENCODINGS;
 
-        Map<String, EncodedStreamsFactory> map = new HashMap<String, EncodedStreamsFactory>();
+        Map<String, EncodedStreamsFactory> map = new HashMap<>();
         map.put(CONTENT_ENCODING_GZIP, GZIP_ENCODED_STREAMS_FACTORY);
         map.put(CONTENT_ENCODING_COMPRESS, ZIP_ENCODED_STREAMS_FACTORY);
         map.put(CONTENT_ENCODING_DEFLATE, DEFLATE_ENCODED_STREAMS_FACTORY);
@@ -81,13 +81,7 @@ class GZIPEncodedStreamsFactory extends EncodedStreamsFactory {
     @Override
     public CompressedInput getCompressedStream(final InputStream inputStream) {
 
-        return new CompressedInput() {
-
-            public InputStream getCompressedInputStream() throws IOException {
-                return new GZIPInputStream(inputStream);
-            }
-
-        };
+        return () -> new GZIPInputStream(inputStream);
     }
 
 }
@@ -125,13 +119,7 @@ class ZIPEncodedStreamsFactory extends EncodedStreamsFactory {
     @Override
     public CompressedInput getCompressedStream(final InputStream inputStream) {
 
-        return new CompressedInput() {
-
-            public InputStream getCompressedInputStream() throws IOException {
-                return new ZipInputStream(inputStream);
-            }
-
-        };
+        return () -> new ZipInputStream(inputStream);
     }
 
 }
@@ -155,13 +143,7 @@ class DeflateEncodedStreamsFactory extends EncodedStreamsFactory {
     @Override
     public CompressedInput getCompressedStream(final InputStream inputStream) {
 
-        return new CompressedInput() {
-
-            public InputStream getCompressedInputStream() throws IOException {
-                return new DeflaterInputStream(inputStream);
-            }
-
-        };
+        return () -> new DeflaterInputStream(inputStream);
     }
 
 }

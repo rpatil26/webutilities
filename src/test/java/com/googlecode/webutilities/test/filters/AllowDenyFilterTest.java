@@ -17,7 +17,6 @@
 package com.googlecode.webutilities.test.filters;
 
 import com.googlecode.webutilities.filters.AllowDenyFilter;
-import com.googlecode.webutilities.filters.YUIMinFilter;
 import com.googlecode.webutilities.servlets.JSCSSMergeServlet;
 import com.mockrunner.mock.web.MockHttpServletResponse;
 import org.junit.Assert;
@@ -32,8 +31,6 @@ public class AllowDenyFilterTest extends AbstractFilterTest {
 
     private JSCSSMergeServlet jscssMergeServlet = new JSCSSMergeServlet();
 
-    private AllowDenyFilter allowDenyFilter;
-
     private static final Logger LOGGER = LoggerFactory.getLogger(AllowDenyFilterTest.class.getName());
 
     @Override
@@ -45,7 +42,7 @@ public class AllowDenyFilterTest extends AbstractFilterTest {
     public void prepare() {
 
         servletTestModule.setServlet(jscssMergeServlet, true);
-        allowDenyFilter = new AllowDenyFilter();
+        AllowDenyFilter allowDenyFilter = new AllowDenyFilter();
         servletTestModule.addFilter(allowDenyFilter, true);
         servletTestModule.setDoChain(true);
 

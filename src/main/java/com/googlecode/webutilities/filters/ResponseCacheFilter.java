@@ -85,7 +85,7 @@ public class ResponseCacheFilter extends AbstractFilter {
 
     public static final String CACHE_HEADER = "X-ResponseCacheFilter";
 
-    public static enum CacheState {FOUND, NOT_FOUND, ADDED, SKIPPED}
+    public enum CacheState {FOUND, NOT_FOUND, ADDED, SKIPPED}
 
     private Cache<String, CachedResponse> cache;
 
@@ -122,7 +122,7 @@ public class ResponseCacheFilter extends AbstractFilter {
 
         lastResetTime = new Date().getTime();
 
-        CacheConfig<String, CachedResponse> cacheConfig = new CacheConfig<String, CachedResponse>();
+        CacheConfig<String, CachedResponse> cacheConfig = new CacheConfig<>();
 
         String providerValue = readString(filterConfig.getInitParameter(INIT_PARAM_CACHE_PROVIDER), null);
 
@@ -223,7 +223,7 @@ public class ResponseCacheFilter extends AbstractFilter {
         List<String> requestedResources = findResourcesToMerge(httpServletRequest.getContextPath(), url);
         ServletContext context = filterConfig.getServletContext();
         String extensionOrPath = detectExtension(url);//in case of non js/css files it null
-        if (extensionOrPath == null) {
+        if (extensionOrPath.isEmpty()) {
             extensionOrPath = requestedResources.get(0);//non grouped i.e. non css/js file, we refer it's path in that case
         }
 
@@ -296,11 +296,11 @@ public class ResponseCacheFilter extends AbstractFilter {
      * - "header=Content-Type, header=Vary"
      * - "parameter=format, parameter=id, header=Vary"
      *
-     * @param request
-     * @return
+     * @param request HttpServletRequest
+     * @return key generated Cache key as per the rule
      */
     protected String generateCacheKeyForTheRequest(HttpServletRequest request) {
-        StringBuffer cacheKey = new StringBuffer();
+        StringBuilder cacheKey = new StringBuilder();
         cacheKey.append(request.getRequestURI());
         String[] keyAttributes = this.cacheKeyFormat.split(",");
         for (String attr : keyAttributes) {

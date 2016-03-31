@@ -41,7 +41,7 @@ public class JSCSSMergeServletTest extends AbstractServletTest {
 
     private static final Logger LOGGER = LoggerFactory.getLogger(JSCSSMergeServletTest.class.getName());
 
-    private List<Filter> filters = new ArrayList<Filter>();
+    private List<Filter> filters = new ArrayList<>();
 
     private static final int NO_STATUS_CODE = -99999;
 
@@ -76,7 +76,7 @@ public class JSCSSMergeServletTest extends AbstractServletTest {
         if (filter != null && !filter.trim().equals("")) {
             String[] filtersString = filter.split(",");
             for (String filterClass : filtersString) {
-                Class<?> clazz = null;
+                Class<?> clazz;
                 try {
                     clazz = Class.forName(filterClass);
                     Filter f = servletTestModule.createFilter(clazz);

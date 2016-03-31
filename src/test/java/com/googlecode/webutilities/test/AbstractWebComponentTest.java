@@ -164,12 +164,12 @@ public abstract class AbstractWebComponentTest {
         }
     }
 
-    public int getExpectedStatus(int defaultStatus) throws Exception {
+    public int getExpectedStatus(int defaultStatus) {
         return Utils.readInt(properties.getProperty(this.currentTestNumber + ".test.expected.status"), defaultStatus);
     }
 
     public Map<String, String> getExpectedHeaders() throws Exception {
-        Map<String, String> headersMap = new HashMap<String, String>();
+        Map<String, String> headersMap = new HashMap<>();
         String expectedHeaders = properties.getProperty(this.currentTestNumber + ".test.expected.headers");
         if (expectedHeaders == null || expectedHeaders.trim().equals("")) return headersMap;
 

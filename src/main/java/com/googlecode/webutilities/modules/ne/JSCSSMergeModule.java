@@ -96,7 +96,7 @@ class JSCSSMergeDirective implements PreChainDirective {
         }
 
         String extensionOrPath = Utils.detectExtension(url);//in case of non js/css files it null
-        if (extensionOrPath == null) {
+        if (extensionOrPath.isEmpty()) {
             extensionOrPath = resourcesToMerge.get(0);//non grouped i.e. non css/js file, we refer it's path in that case
         }
 
@@ -217,17 +217,15 @@ class JSCSSMergeDirective implements PreChainDirective {
                 LOGGER.error("IOException :", e);
             }
 
-            if (is != null) {
-                try {
-                    is.close();
-                } catch (IOException ex) {
-                    LOGGER.warn("Failed to close stream: {}", ex);
-                }
-                try {
-                    outputStream.flush();
-                } catch (IOException ex) {
-                    LOGGER.error("Failed to flush out:{}", outputStream);
-                }
+            try {
+                is.close();
+            } catch (IOException ex) {
+                LOGGER.warn("Failed to close stream: {}", ex);
+            }
+            try {
+                outputStream.flush();
+            } catch (IOException ex) {
+                LOGGER.error("Failed to flush out:{}", outputStream);
             }
 
         }

@@ -95,9 +95,6 @@ class MockJSCSSMergeServlet extends com.googlecode.webutilities.servlets.JSCSSMe
 
     @Override
     protected boolean isCSS(String resourcePath) {
-        if (resourcePath.endsWith(TEST_CSS_EXT)) {
-            return true;
-        }
-        return super.isCSS(resourcePath);
+        return resourcePath.endsWith(TEST_CSS_EXT) || super.isCSS(resourcePath);
     }
 }

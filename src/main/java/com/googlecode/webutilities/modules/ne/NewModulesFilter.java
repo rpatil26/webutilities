@@ -127,7 +127,7 @@ public class NewModulesFilter extends AbstractFilter {
         for (RulesMapping rulesMapping : config.rulesMappings) {
             if (rulesMapping.isURLAccepted(url) && (rulesMapping.isMIMEAccepted(requestMime) || rulesMapping.isMIMEAccepted(responseMime)) && rulesMapping.isUserAgentAccepted(userAgent)) {
                 if (eligibleRules == null)
-                    eligibleRules = new ArrayList<DirectivePair>(); //lazy init
+                    eligibleRules = new ArrayList<>(); //lazy init
                 for (DirectivePair rules : rulesMapping.getRules()) {
                     if (!eligibleRules.contains(rules)) {
                         //((BaseModule) module).setContext(this.filterConfig.getServletContext());
@@ -147,7 +147,7 @@ public class NewModulesFilter extends AbstractFilter {
         HttpServletRequest moduleRequest = (HttpServletRequest) servletRequest;
         HttpServletResponse moduleResponse = (HttpServletResponse) servletResponse;
         List<DirectivePair> allEligibleRules = getAllEligibleRules(moduleRequest, moduleResponse);
-        Stack<PostChainDirective> postChainRules = new Stack<PostChainDirective>();
+        Stack<PostChainDirective> postChainRules = new Stack<>();
         int status = IDirective.OK;
         //pre chain rules
         for (DirectivePair rulePair : allEligibleRules) {
@@ -225,7 +225,7 @@ public class NewModulesFilter extends AbstractFilter {
     public static class Config {
 
 
-        private final List<RulesMapping> rulesMappings = new ArrayList<RulesMapping>();
+        private final List<RulesMapping> rulesMappings = new ArrayList<>();
 
         private static String extractRegExFor(String line, String param) {
             int index = line.indexOf(param);
@@ -237,8 +237,6 @@ public class NewModulesFilter extends AbstractFilter {
                 int spaceAt = regEx.indexOf(" ");
                 if (spaceAt > 0) {
                     regEx = regEx.substring(0, spaceAt);
-                } else {
-                    regEx = regEx.substring(0);
                 }
             }
             return regEx;
@@ -411,7 +409,7 @@ public class NewModulesFilter extends AbstractFilter {
 
         }
 
-        private final List<DirectivePair> rules = new ArrayList<DirectivePair>();
+        private final List<DirectivePair> rules = new ArrayList<>();
 
         private boolean isURLIgnored(String url) {
             return this.ignoreURLPattern != null && url != null && url.matches(ignoreURLPattern);

@@ -48,8 +48,8 @@ public class WebUtilitiesResponseWrapper extends HttpServletResponseWrapper {
                     .getName());
 
     private WebUtilitiesResponseOutputStream stream;
-    private Map<String, Serializable> headers = new HashMap<String, Serializable>();
-    private Set<Cookie> cookies = new HashSet<Cookie>();
+    private Map<String, Serializable> headers = new HashMap<>();
+    private Set<Cookie> cookies = new HashSet<>();
     private String contentType;
     private int status = 0;
     private boolean getWriterCalled = false;
@@ -60,13 +60,6 @@ public class WebUtilitiesResponseWrapper extends HttpServletResponseWrapper {
     public void addCookie(Cookie cookie) {
         super.addCookie(cookie);
         cookies.add(cookie);
-    }
-
-    @Override
-    public void setStatus(int sc, String sm) {
-        if (this.status != 0) return;
-        super.setStatus(sc, sm);
-        this.status = sc;
     }
 
     @Override
@@ -233,9 +226,7 @@ public class WebUtilitiesResponseWrapper extends HttpServletResponseWrapper {
         response.setCharacterEncoding(this.getCharacterEncoding());
         response.setContentType(this.getContentType());
 
-        for (Cookie cookie : this.getCookies()) {
-            response.addCookie(cookie);
-        }
+        this.getCookies().forEach(response::addCookie);
         for (String headerName : this.getHeaders().keySet()) {
             Object value = this.getHeaders().get(headerName);
             if (value instanceof Long) {

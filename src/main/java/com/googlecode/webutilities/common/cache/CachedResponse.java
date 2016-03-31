@@ -28,9 +28,9 @@ public class CachedResponse implements Serializable {
 
     static final long serialVersionUID = 1L;
 
-    private Map<String, Serializable> headers = new HashMap<String, Serializable>();
+    private Map<String, Serializable> headers = new HashMap<>();
 
-    private Set<Cookie> cookies = new HashSet<Cookie>();
+    private Set<Cookie> cookies = new HashSet<>();
 
     private int status = 0;
 
@@ -65,9 +65,7 @@ public class CachedResponse implements Serializable {
 
     public void toResponse(HttpServletResponse response) {
 
-        for (Cookie cookie : this.cookies) {
-            response.addCookie(cookie);
-        }
+        this.cookies.forEach(response::addCookie);
         for (String headerName : this.headers.keySet()) {
             Object value = this.headers.get(headerName);
             if (value instanceof Long) {

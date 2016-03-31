@@ -24,7 +24,6 @@ import net.spy.memcached.FailureMode;
 import net.spy.memcached.MemcachedClient;
 
 import java.io.IOException;
-import java.net.InetSocketAddress;
 
 /**
  * Cache implemented using Memcached Cache

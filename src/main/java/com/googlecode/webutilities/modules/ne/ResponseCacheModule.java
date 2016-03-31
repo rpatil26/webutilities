@@ -38,7 +38,7 @@ public class ResponseCacheModule implements IModule {
 
     static long lastResetTime;
 
-    static final Map<String, CacheObject> cache = new ConcurrentHashMap<String, CacheObject>();
+    static final Map<String, CacheObject> cache = new ConcurrentHashMap<>();
 
     private static final Logger LOGGER = LoggerFactory.getLogger(ResponseCacheModule.class.getName());
 

@@ -24,7 +24,6 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import javax.servlet.Filter;
-import javax.servlet.http.HttpServletResponse;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
@@ -37,7 +36,7 @@ public class WebProxyServletTest extends AbstractServletTest {
 
     private static final Logger LOGGER = LoggerFactory.getLogger(WebProxyServletTest.class.getName());
 
-    private List<Filter> filters = new ArrayList<Filter>();
+    private List<Filter> filters = new ArrayList<>();
 
     private static final int NO_STATUS_CODE = -99999;
 
@@ -74,7 +73,7 @@ public class WebProxyServletTest extends AbstractServletTest {
         if (filter != null && !filter.trim().equals("")) {
             String[] filtersString = filter.split(",");
             for (String filterClass : filtersString) {
-                Class<?> clazz = null;
+                Class<?> clazz;
                 try {
                     clazz = Class.forName(filterClass);
                     Filter f = servletTestModule.createFilter(clazz);

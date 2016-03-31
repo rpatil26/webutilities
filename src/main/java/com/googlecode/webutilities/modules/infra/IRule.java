@@ -18,7 +18,7 @@ package com.googlecode.webutilities.modules.infra;
 
 public interface IRule {
 
-    static enum Status {
+    enum Status {
         CONTINUE,
         NO_CHAIN,
         STOP

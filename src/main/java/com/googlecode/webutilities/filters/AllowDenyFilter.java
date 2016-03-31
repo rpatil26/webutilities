@@ -38,9 +38,9 @@ public class AllowDenyFilter extends AbstractFilter {
 
     private String denyFrom;
 
-    Set<IpSubnet> allowedSubnets = new HashSet<IpSubnet>();
+    Set<IpSubnet> allowedSubnets = new HashSet<>();
 
-    Set<IpSubnet> deniedSubnets = new HashSet<IpSubnet>();
+    Set<IpSubnet> deniedSubnets = new HashSet<>();
 
     private int errorCodeToReturn = HttpServletResponse.SC_FORBIDDEN;
 

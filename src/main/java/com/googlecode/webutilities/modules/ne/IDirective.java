@@ -23,11 +23,11 @@ import javax.servlet.ServletContext;
 
 public interface IDirective {
 
-    public static final int OK = 0;
+    int OK = 0;
 
-    public static final int STOP = 1;
+    int STOP = 1;
 
-    public static final int STOP_CHAIN = 2;
+    int STOP_CHAIN = 2;
 
     int execute(ModuleRequest request, ModuleResponse response, ServletContext context);
 

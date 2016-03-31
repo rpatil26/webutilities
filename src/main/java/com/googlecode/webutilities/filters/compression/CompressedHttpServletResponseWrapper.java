@@ -57,7 +57,7 @@ public class CompressedHttpServletResponseWrapper extends WebUtilitiesResponseWr
     private boolean noTransformSet;
     private int threshold = DEFAULT_COMPRESSION_SIZE_THRESHOLD;
 
-    private static final List<String> UNALLOWED_HEADERS = new ArrayList<String>();
+    private static final List<String> UNALLOWED_HEADERS = new ArrayList<>();
 
     static {
         UNALLOWED_HEADERS.add(HTTP_CONTENT_LENGTH_HEADER.toLowerCase());

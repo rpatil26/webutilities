@@ -32,7 +32,7 @@ import java.util.Set;
 
 /**
  * Module similar to apache's mod_access
- * <p/>
+ * <p>
  * Example Rules
  * Access Allow from all|host|subnet
  * Access Deny from all|host|subnet
@@ -74,7 +74,7 @@ class AllowRule implements PreChainDirective {
 
     public static final Logger LOGGER = LoggerFactory.getLogger(AllowRule.class.getName());
 
-    Set<IpSubnet> subnets = new HashSet<IpSubnet>();
+    Set<IpSubnet> subnets = new HashSet<>();
 
     AllowRule(String hosts) {
         String[] multiple = hosts.split("\\s+");
@@ -107,15 +107,15 @@ class AllowRule implements PreChainDirective {
     @Override
     public int execute(ModuleRequest request, ModuleResponse response, ServletContext context) {
         String hostName = request.getRemoteHost();
-        if (!this.allow(hostName)) {
-            try {
-                response.sendError(HttpServletResponse.SC_FORBIDDEN);
-                return IDirective.STOP;
-            } catch (Exception ex) {
-                LOGGER.error(ex.getMessage(), ex);
-            }
+        if (this.allow(hostName)) {
+            return IDirective.OK;
         }
-        return IDirective.OK;
+        try {
+            response.sendError(HttpServletResponse.SC_FORBIDDEN);
+        } catch (Exception ex) {
+            LOGGER.error(ex.getMessage(), ex);
+        }
+        return IDirective.STOP;
     }
 
     @Override

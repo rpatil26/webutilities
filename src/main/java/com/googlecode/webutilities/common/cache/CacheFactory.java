@@ -29,18 +29,18 @@ import java.io.IOException;
 public class CacheFactory {
 
     public static <K, V> Cache getDefaultCache() {
-        return new GoogleCache<K, V>(new CacheConfig<K, V>());
+        return new GoogleCache<>(new CacheConfig<>());
     }
 
     public static <K, V> Cache<K, V> getCache(CacheConfig<K, V> config) throws IOException {
         if (CacheConfig.CacheProvider.MEMCACHED.equals(config.getProvider())) {
-            return new MemcachedCache<K, V>(config);
+            return new MemcachedCache<>(config);
         } else if (CacheConfig.CacheProvider.REDIS.equals(config.getProvider())) {
-            return new RedisCache<K, V>(config);
+            return new RedisCache<>(config);
         } else if (CacheConfig.CacheProvider.COUCHBASE.equals(config.getProvider())) {
-            return new CouchbaseCache<K, V>(config);
+            return new CouchbaseCache<>(config);
         } else {
-            return new GoogleCache<K, V>(new CacheConfig<K, V>());
+            return new GoogleCache<>(new CacheConfig<>());
         }
     }
 

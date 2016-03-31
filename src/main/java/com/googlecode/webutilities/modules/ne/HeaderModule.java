@@ -57,7 +57,9 @@ public class HeaderModule implements IModule {
 
         assert splits.length >= 4;
 
-        if (!splits[index++].equals(HeaderModule.class.getSimpleName())) return pair;
+        if (!splits[index++].equals(HeaderModule.class.getSimpleName())) {
+            return pair;
+        }
 
         Directive directive;
         Condition condition = Condition.always;
@@ -316,14 +318,14 @@ class ResponseDirective extends RequestDirective {
 
 class HeaderRequest extends ModuleRequest {
 
-    private Map<String, Object> headers = new HashMap<String, Object>();
+    private Map<String, Object> headers = new HashMap<>();
 
     public HeaderRequest(HttpServletRequest request) {
         super(request);
         Enumeration existingHeaders = request.getHeaderNames();
         while (existingHeaders.hasMoreElements()) {
             String name = (String) existingHeaders.nextElement();
-            Enumeration multiple = request.getHeaders(name);
+            Enumeration<String> multiple = request.getHeaders(name);
             if (multiple != null) {
                 while (multiple.hasMoreElements()) {
                     this.addHeader(name.toLowerCase(), multiple.nextElement());
@@ -349,18 +351,18 @@ class HeaderRequest extends ModuleRequest {
     }
 
     @Override
-    public Enumeration getHeaders(String name) {
+    public Enumeration<String> getHeaders(String name) {
         Object list = headers.get(name.toLowerCase());
         if (list instanceof ArrayList) {
             return Collections.enumeration((ArrayList) list);
         }
-        ArrayList<Object> aList = new ArrayList<Object>();
-        aList.add(list);
+        ArrayList<String> aList = new ArrayList<>();
+        aList.add((String) list);
         return Collections.enumeration(aList);
     }
 
     @Override
-    public Enumeration getHeaderNames() {
+    public Enumeration<String> getHeaderNames() {
         return Collections.enumeration(headers.keySet());
     }
 
@@ -381,14 +383,14 @@ class HeaderRequest extends ModuleRequest {
         headers.put(name, value);
     }
 
-    public void addHeader(String name, Object value) {
+    public void addHeader(String name, String value) {
         Object header = headers.get(name.toLowerCase());
         if (header instanceof ArrayList) {
-            ArrayList<Object> list = (ArrayList<Object>) header;
+            ArrayList<String> list = (ArrayList<String>) header;
             list.add(value);
             headers.put(name, list);
         } else {
-            ArrayList<Object> list = new ArrayList<Object>();
+            ArrayList<Object> list = new ArrayList<>();
             if (header != null) list.add(header);
             list.add(value);
             headers.put(name, list);
@@ -404,9 +406,9 @@ class HeaderRequest extends ModuleRequest {
 
 class HeaderResponse extends ModuleResponse {
 
-    private Set<String> toBeUnsetHeaders = new HashSet<String>();
+    private Set<String> toBeUnsetHeaders = new HashSet<>();
 
-    private Map<String, Object> toBeAppendedHeaders = new HashMap<String, Object>();
+    private Map<String, Object> toBeAppendedHeaders = new HashMap<>();
 
     HeaderResponse(HttpServletResponse response) {
         super(response);

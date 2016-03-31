@@ -22,14 +22,14 @@ package com.googlecode.webutilities.common.cache;
 
 public interface Cache<K, V> {
 
-    public void put(K key, V value);
+    void put(K key, V value);
 
-    public V get(K key);
+    V get(K key);
 
-    public void invalidate(K key);
+    void invalidate(K key);
 
-    public void invalidateAll();
+    void invalidateAll();
 
-    public void cleanup();
+    void cleanup();
 
 }

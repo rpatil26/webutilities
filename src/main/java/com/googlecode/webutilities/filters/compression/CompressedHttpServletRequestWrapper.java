@@ -115,7 +115,7 @@ public final class CompressedHttpServletRequestWrapper extends HttpServletReques
             return null;
         }
 
-        Collection<String> headerNames = new ArrayList<String>();
+        Collection<String> headerNames = new ArrayList<>();
         while (originalHeaderNames.hasMoreElements()) {
             String headerName = (String) originalHeaderNames.nextElement();
             if (!skippedHeader(headerName)) {

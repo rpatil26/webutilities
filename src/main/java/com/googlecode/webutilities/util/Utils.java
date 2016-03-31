@@ -216,16 +216,12 @@ public final class Utils {
 
         String extension = Utils.detectExtension(requestURI);
 
-        if (extension == null) {
-            extension = "";
-        }
-
         requestURI = requestURI.replaceFirst(contextPath, "");//.replace(extension, "");//remove the context path & ext. will become /path/subpath/a,b,/anotherpath/c
         requestURI = requestURI.substring(0, requestURI.lastIndexOf(extension));
 
         String[] resourcesPath = requestURI.split(",");
 
-        List<String> resources = new ArrayList<String>();
+        List<String> resources = new ArrayList<>();
 
         String currentPath = PATH_ROOT; //default
 
@@ -325,7 +321,7 @@ public final class Utils {
             List<String> referencesList = CSS_IMG_REFERENCES.get(cssFilePath);
             if (imgFile.isFile() && imgFile.exists()) {
                 if (referencesList == null) {
-                    referencesList = new LinkedList<String>();
+                    referencesList = new LinkedList<>();
                     referencesList.add(imgFilePath);
                     CSS_IMG_REFERENCES.put(cssFilePath, referencesList);
                 }
@@ -529,7 +525,7 @@ public final class Utils {
      */
 
     public static Map<String, String> buildHeadersMapFromString(String headerString) {
-        Map<String, String> headersMap = new HashMap<String, String>();
+        Map<String, String> headersMap = new HashMap<>();
         if (headerString != null) {
             String[] headers = headerString.split("\\|");
             for (String header : headers) {

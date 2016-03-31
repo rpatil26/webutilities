@@ -24,9 +24,9 @@ import java.util.Map;
 
 public abstract class AbstractTagTest extends AbstractWebComponentTest {
 
-    protected TagTestModule tagTestModule;
+    TagTestModule tagTestModule;
 
-    protected Map<Object, Object> attributeMap = new HashMap<Object, Object>();
+    protected final Map<Object, Object> attributeMap = new HashMap<>();
 
     @Override
     protected void setupInitParam(String name, String value) {
@@ -61,7 +61,7 @@ public abstract class AbstractTagTest extends AbstractWebComponentTest {
         tagTestModule = new TagTestModule(webMockObjectFactory);
     }
 
-    public abstract void setupTag();
+    protected abstract void setupTag();
 
     public abstract void setupTagBodyContent() throws Exception;
 

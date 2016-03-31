@@ -122,7 +122,7 @@ public class ModulesFilter extends AbstractFilter {
         List<IModule> eligibleModule = null;
         for (RuleMapping ruleMapping : config.ruleMappings) {
             if (ruleMapping.isURLAccepted(url) && (ruleMapping.isMIMEAccepted(requestMime) || ruleMapping.isMIMEAccepted(responseMime)) && ruleMapping.isUserAgentAccepted(userAgent)) {
-                if (eligibleModule == null) eligibleModule = new ArrayList<IModule>(); //lazy init
+                if (eligibleModule == null) eligibleModule = new ArrayList<>(); //lazy init
                 for (IModule module : ruleMapping.getAllModules()) {
                     if (!eligibleModule.contains(module)) {
                         ((BaseModule) module).setContext(this.filterConfig.getServletContext());
@@ -171,7 +171,7 @@ public class ModulesFilter extends AbstractFilter {
     public static class Config {
 
 
-        private final List<RuleMapping> ruleMappings = new ArrayList<RuleMapping>();
+        private final List<RuleMapping> ruleMappings = new ArrayList<>();
 
         private static String extractRegExFor(String line, String param) {
             int index = line.indexOf(param);
@@ -183,9 +183,7 @@ public class ModulesFilter extends AbstractFilter {
                 int spaceAt = regEx.indexOf(" ");
                 if (spaceAt > 0) {
                     regEx = regEx.substring(0, spaceAt);
-                } else {
-                    regEx = regEx.substring(0);
-                }
+                } 
             }
             return regEx;
         }
@@ -353,7 +351,7 @@ public class ModulesFilter extends AbstractFilter {
             this.acceptQSPattern = acceptQSPattern;
         }
 
-        private final Map<String, IModule> modules = new LinkedHashMap<String, IModule>();
+        private final Map<String, IModule> modules = new LinkedHashMap<>();
 
         private boolean isURLIgnored(String url) {
             return this.ignoreURLPattern != null && url != null && url.matches(ignoreURLPattern);

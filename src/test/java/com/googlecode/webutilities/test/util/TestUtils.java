@@ -46,7 +46,7 @@ public final class TestUtils {
         return (ch2 == -1);
     }
 
-    public static boolean compressedContentEquals(String left, String right) throws IOException {
+    public static boolean compressedContentEquals(String left, String right) {
         if (left == null && right == null) {
             return true;
         }

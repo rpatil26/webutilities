@@ -21,9 +21,9 @@ import java.util.List;
 
 public class ModuleRules {
 
-    private List<PreChainRule> preChainRules = new ArrayList<PreChainRule>();
+    private List<PreChainRule> preChainRules = new ArrayList<>();
 
-    private List<PostChainRule> postChainRules = new ArrayList<PostChainRule>();
+    private List<PostChainRule> postChainRules = new ArrayList<>();
 
     public boolean addRule(IRule rule) {
         if (rule instanceof PostChainRule) {

@@ -21,7 +21,7 @@ import com.mockrunner.servlet.ServletTestModule;
 
 public abstract class AbstractFilterTest extends AbstractWebComponentTest {
 
-    protected ServletTestModule servletTestModule;
+    ServletTestModule servletTestModule;
 
     @Override
     protected void setupInitParam(String name, String value) {

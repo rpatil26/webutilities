@@ -3,7 +3,7 @@ var PersonJSON = function(name){
 	this.getName = function(){
 		return name;	
 	}
-}
+};
 
 var EmployeeJS = function(name,empId){
 	
