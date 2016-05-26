@@ -91,6 +91,8 @@ public class ClosureCompilerFilter extends AbstractFilter {
 
             chain.doFilter(req, wrapper);
 
+            wrapper.flushBuffer();
+
             Writer out = resp.getWriter();
             String mime = wrapper.getContentType();
             if (!isMIMEAccepted(mime)) {
