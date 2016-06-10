@@ -16,6 +16,20 @@
 
 package com.googlecode.webutilities.filters;
 
+import static com.googlecode.webutilities.common.Constants.*;
+
+import java.io.ByteArrayInputStream;
+import java.io.IOException;
+import java.io.Writer;
+import java.nio.charset.Charset;
+import java.nio.charset.StandardCharsets;
+import java.util.Enumeration;
+import java.util.logging.Level;
+
+import javax.servlet.*;
+import javax.servlet.http.HttpServletRequest;
+import javax.servlet.http.HttpServletResponse;
+
 import com.google.javascript.jscomp.*;
 import com.google.javascript.jscomp.Compiler;
 import com.googlecode.webutilities.common.Constants;
@@ -23,19 +37,6 @@ import com.googlecode.webutilities.common.WebUtilitiesResponseWrapper;
 import com.googlecode.webutilities.filters.common.AbstractFilter;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-
-import javax.servlet.*;
-import javax.servlet.http.HttpServletRequest;
-import javax.servlet.http.HttpServletResponse;
-import java.io.ByteArrayInputStream;
-import java.io.IOException;
-import java.io.Writer;
-import java.util.Enumeration;
-import java.util.logging.Level;
-
-import static com.googlecode.webutilities.common.Constants.*;
-import static com.googlecode.webutilities.util.Utils.readBoolean;
-import static com.googlecode.webutilities.util.Utils.readString;
 
 
 /**
@@ -48,7 +49,7 @@ public class ClosureCompilerFilter extends AbstractFilter {
 
     private static final Logger LOGGER = LoggerFactory.getLogger(ClosureCompilerFilter.class.getName());
 
-    CompilerOptions compilerOptions;
+    FilterConfig filterConfig;
 
     SourceFile nullExtern = SourceFile.fromCode("/dev/null", "");
 
@@ -56,7 +57,8 @@ public class ClosureCompilerFilter extends AbstractFilter {
 
     public void init(FilterConfig config) throws ServletException {
         super.init(config);
-        compilerOptions = buildCompilerOptionsFromConfig(config);
+        filterConfig = config;
+        CompilerOptions compilerOptions = buildCompilerOptionsFromConfig(config);
         LOGGER.debug("Filter initialized with: {}", compilerOptions.toString());
     }
 
@@ -123,6 +125,7 @@ public class ClosureCompilerFilter extends AbstractFilter {
                 });
                 LOGGER.trace("Compressing JS/JSON type");
                 CompilationLevel level = CompilationLevel.SIMPLE_OPTIMIZATIONS;
+                CompilerOptions compilerOptions = buildCompilerOptionsFromConfig(filterConfig);
                 level.setOptionsForCompilationLevel(compilerOptions);
                 Result result = closureCompiler.compile(nullExtern, SourceFile.fromInputStream("NULL", is), compilerOptions);
                 if (result.success) {
@@ -145,15 +148,17 @@ public class ClosureCompilerFilter extends AbstractFilter {
 
         CompilerOptions compilerOptions = new CompilerOptions();
         compilerOptions.setCodingConvention(CodingConventions.getDefault());
-        //List<String> processedArgs = Lists.newArrayList();
+
         Enumeration<String> initParams = config.getInitParameterNames();
         while (initParams.hasMoreElements()) {
             String name = initParams.nextElement().trim();
             String value = config.getInitParameter(name);
-            if ("acceptConstKeyword".equals(name)) {
-                compilerOptions.setAcceptConstKeyword(readBoolean(value, false));
-            } else if ("charset".equals(name)) {
-                compilerOptions.setOutputCharset(readString(value, "UTF-8"));
+            if ("charset".equals(name)) {
+                if (value != null && Charset.isSupported(value)) {
+                    compilerOptions.setOutputCharset(Charset.forName(value));
+                } else {
+                    compilerOptions.setOutputCharset(StandardCharsets.UTF_8);
+                }
             } else if ("compilationLevel".equals(name)) {
                 CompilationLevel compilationLevel = CompilationLevel.valueOf(value);
                 compilationLevel.setOptionsForCompilationLevel(compilerOptions);
