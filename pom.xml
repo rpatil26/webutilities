@@ -86,7 +86,7 @@
         <dependency>
             <groupId>com.google.javascript</groupId>
             <artifactId>closure-compiler</artifactId>
-            <version>v20140407</version>
+            <version>v20160517</version>
         </dependency>
         <dependency>
             <groupId>javax.servlet.jsp</groupId>
