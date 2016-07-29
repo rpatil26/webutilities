@@ -19,7 +19,9 @@ It is said that 80% of the end-user response time is spent on the front-end. To 
 *   Minify Inline CSS and JS code blocks
 *   Add Character Encoding to your response
 *   Server compressed contents (gzip/compress/deflate)
-*   Cache responses to speed loading by avoiding reprocessing 
+*   Cache responses to speed loading by avoiding reprocessing
+   
+<iframe src="//www.slideshare.net/slideshow/embed_code/key/pEJlvaG5S0Zoe8" width="595" height="485" frameborder="0" marginwidth="0" marginheight="0" scrolling="no" style="border:1px solid #CCC; border-width:1px; margin-bottom:5px; max-width: 100%;" allowfullscreen> </iframe> <div style="margin-bottom:5px"> <strong> <a href="//www.slideshare.net/rpatil82/static-resourceoptimization-using-webutilities" title="Static resource-optimization using webutilities" target="_blank">Static resource-optimization using webutilities</a> </strong> from <strong><a href="//www.slideshare.net/rpatil82" target="_blank">rpatil82</a></strong> </div>
 
 ### Get started
 
