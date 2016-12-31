@@ -426,7 +426,7 @@ public class JSCSSMergeServlet extends HttpServlet {
      */
     private long processCSS(String contextPath, String cssFilePath, InputStream inputStream, OutputStream outputStream) throws IOException {
         ServletContext context = this.getServletContext();
-        BufferedReader bufferedReader = new BufferedReader(new InputStreamReader(inputStream));
+        BufferedReader bufferedReader = new BufferedReader(new InputStreamReader(inputStream, DEFAULT_CHARSET));
         String line;
         long bytesWritten = 0;
         StringBuffer buffer = new StringBuffer();
@@ -434,7 +434,7 @@ public class JSCSSMergeServlet extends HttpServlet {
             buffer.setLength(0);
             buffer.append(line);
             line = this.processCSSLine(context, contextPath, cssFilePath, buffer);
-            byte[] bytes = (line + "\n").getBytes();
+            byte[] bytes = (line + "\n").getBytes(DEFAULT_CHARSET);
             outputStream.write(bytes);
             bytesWritten += bytes.length;
         }
