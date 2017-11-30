@@ -152,6 +152,9 @@ public class CompressedServletOutputStream extends ServletOutputStream {
                 flushBufferToStream(outputStream);
                 outputStream.flush();
                 compressed.finish();
+                // explicitly close compressed, which causes the Deflater used to free its memory!
+                //  see: http://www.devguli.com/blog/eng/java-deflater-and-outofmemoryerror/
+                compressed.getCompressedOutputStream().close();
                 outputStream.close();
             }
 
