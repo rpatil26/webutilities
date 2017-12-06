@@ -358,9 +358,8 @@ public final class Utils {
         if (realPath.endsWith(EXT_CSS)) { // check if any image references by this css has been modified or not
             long cssLastModified = realFile.lastModified();
 
-            List<String> referencedImages = CSS_IMG_REFERENCES.get(realPath);
-
-            if (referencedImages != null) {
+            final List<String> referencedImages = new ArrayList<>(CSS_IMG_REFERENCES.getOrDefault(realPath,Collections.emptyList()));
+            if (!referencedImages.isEmpty()) {
                 for (String referenceImage : referencedImages) {
                     File imgFile = new File(referenceImage);
                     if (imgFile.isFile() && imgFile.exists()) {
