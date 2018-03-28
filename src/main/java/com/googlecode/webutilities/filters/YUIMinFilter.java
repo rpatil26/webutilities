@@ -51,7 +51,7 @@ import static com.googlecode.webutilities.util.Utils.readInt;
  * <pre>
  * ...
  * &lt;filter&gt;
- * 	&lt;filter-name&gt;yuiMinFilter&lt;/filter-name&gt;</b>
+ * 	&lt;filter-name&gt;yuiMinFilter&lt;/filter-name&gt;
  * 	&lt;filter-class&gt;<b>com.googlecode.webutilities.filters.YUIMinFilter</b>&lt;/filter-class&gt;
  * 	&lt;!-- All the init params are optional and are equivalent to YUICompressor command line options --&gt;
  * 	&lt;init-param&gt;
@@ -69,7 +69,7 @@ import static com.googlecode.webutilities.util.Utils.readInt;
  *   &lt;url-pattern&gt;<b>*.js</b>&lt;/url-pattern&gt;
  *   &lt;url-pattern&gt;<b>*.json</b>&lt;/url-pattern&gt;
  *   &lt;url-pattern&gt;<b>*.css</b>&lt;/url-pattern&gt;
- * &lt;/filter-mapping>
+ * &lt;/filter-mapping&gt;
  * ...
  * </pre>
  * <p>

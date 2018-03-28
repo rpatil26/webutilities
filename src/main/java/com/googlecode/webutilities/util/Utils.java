@@ -206,7 +206,7 @@ public final class Utils {
      * <p>
      * http://server/context/js/a,/js/libs/b,/js/yui/c.js - absolutes paths for all OR
      * http://server/context/js/a,/js/libs/b,../yui/c.js - relative path used for c.js (relative to b) OR
-     * http://server/context/js/a,/js/libs/b,./c.js OR - b & c are in same directory /js/libs
+     * http://server/context/js/a,/js/libs/b,./c.js OR - b &amp; c are in same directory /js/libs
      *
      * @param contextPath request Context Path
      * @param requestURI  requestURI

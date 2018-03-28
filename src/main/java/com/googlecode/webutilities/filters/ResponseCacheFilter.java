@@ -55,7 +55,7 @@ import static com.googlecode.webutilities.util.Utils.*;
  * <pre>
  * ...
  * &lt;filter&gt;
- * 	&lt;filter-name&gt;responseCacheFilter&lt;/filter-name&gt;</b>
+ * 	&lt;filter-name&gt;responseCacheFilter&lt;/filter-name&gt;
  * 	&lt;filter-class&gt;<b>com.googlecode.webutilities.filters.ResponseCacheFilter</b>&lt;/filter-class&gt;
  * &lt;/filter&gt;
  * ...
@@ -68,7 +68,7 @@ import static com.googlecode.webutilities.util.Utils.*;
  *   &lt;url-pattern&gt;<b>*.js</b>&lt;/url-pattern&gt;
  *   &lt;url-pattern&gt;<b>*.json</b>&lt;/url-pattern&gt;
  *   &lt;url-pattern&gt;<b>*.css</b>&lt;/url-pattern&gt;
- * &lt;/filter-mapping>
+ * &lt;/filter-mapping&gt;
  * ...
  * </pre>
  * <p>

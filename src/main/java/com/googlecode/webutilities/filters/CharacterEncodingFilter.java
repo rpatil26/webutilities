@@ -50,7 +50,7 @@ import static com.googlecode.webutilities.util.Utils.*;
  * <pre>
  * ...
  * &lt;filter&gt;
- * 	&lt;filter-name&gt;characterEncodingFilter&lt;/filter-name&gt;</b>
+ * 	&lt;filter-name&gt;<b>characterEncodingFilter</b>&lt;/filter-name&gt;
  * 	&lt;filter-class&gt;<b>com.googlecode.webutilities.CharacterEncodingFilter</b>&lt;/filter-class&gt;
  * 	&lt;!-- init params  --&gt;
  * 	&lt;init-param&gt;
@@ -74,7 +74,7 @@ import static com.googlecode.webutilities.util.Utils.*;
  * &lt;filter-mapping&gt;
  *   &lt;filter-name&gt;characterEncodingFilter&lt;/filter-name&gt;
  *   &lt;url-pattern&gt;<b>*</b>&lt;/url-pattern&gt;
- * &lt;/filter-mapping>
+ * &lt;/filter-mapping&gt;
  * ...
  * </pre>
  * <p>

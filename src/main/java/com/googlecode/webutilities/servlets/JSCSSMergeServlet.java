@@ -49,7 +49,7 @@ import static com.googlecode.webutilities.util.Utils.*;
  * <pre>
  * ...
  * &lt;servlet&gt;
- * 	&lt;servlet-name&gt;JSCSSMergeServet&lt;/servlet-name&gt;</b>
+ * 	&lt;servlet-name&gt;JSCSSMergeServet&lt;/servlet-name&gt;
  * 	&lt;servlet-class&gt;<b>com.googlecode.webutilities.JSCSSMergeServet</b>&lt;/servlet-class&gt;
  * 	&lt;!-- This init param is optional and default value is minutes for 7 days in future. To expire in the past use negative value. --&gt;
  * 	&lt;init-param&gt;
@@ -72,7 +72,7 @@ import static com.googlecode.webutilities.util.Utils.*;
  *   &lt;url-pattern&gt;<b>*.js</b>&lt;/url-pattern&gt;
  *   &lt;url-pattern&gt;<b>*.json</b>&lt;/url-pattern&gt;
  *   &lt;url-pattern&gt;<b>*.css</b>&lt;/url-pattern&gt;
- * &lt;/servlet-mapping>
+ * &lt;/servlet-mapping&gt;
  * ...
  * </pre>
  * <p>
@@ -282,6 +282,11 @@ public class JSCSSMergeServlet extends HttpServlet {
 
     /**
      * @param response httpServletResponse
+     * @param extensionOrFile File extension or name
+     * @param hashForETag Hash
+     * @param expiresMinutes Time in minutes
+     * @param cacheControl Cache control
+     * @param overrideExistingHeaders Whteher to override existing headers
      */
     public static void sendNotModified(HttpServletResponse response, String extensionOrFile, String hashForETag,
                                        long expiresMinutes, String cacheControl, boolean overrideExistingHeaders) {
@@ -324,8 +329,10 @@ public class JSCSSMergeServlet extends HttpServlet {
     }
 
     /**
+     * @param context          - HttpServletContext
      * @param request          - HttpServletRequest
      * @param resourcesToMerge - list of resources relative paths
+     * @param turnOffETag      - Whether to turn off ETag
      * @return true if not modified based on if-None-Match and If-Modified-Since
      */
     public static ResourceStatus isNotModified(ServletContext context, HttpServletRequest request, List<String> resourcesToMerge, boolean turnOffETag) {
