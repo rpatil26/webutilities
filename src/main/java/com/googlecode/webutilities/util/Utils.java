@@ -199,11 +199,11 @@ public final class Utils {
     /**
      * Split multiple resources with comma eg. if URL is http://server/context/js/a,b,c.js
      * then a.js, b.js and c.js have to be processed and merged together.
-     * <p/>
+     * <p>
      * b and c can be absolute paths or relative (relative to previous resource) too.
-     * <p/>
+     * <p>
      * eg.
-     * <p/>
+     * <p>
      * http://server/context/js/a,/js/libs/b,/js/yui/c.js - absolutes paths for all OR
      * http://server/context/js/a,/js/libs/b,../yui/c.js - relative path used for c.js (relative to b) OR
      * http://server/context/js/a,/js/libs/b,./c.js OR - b & c are in same directory /js/libs

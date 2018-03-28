@@ -26,16 +26,16 @@ import javax.servlet.ServletException;
 /**
  * Common AbstractFilter - infra filter code to be used by other filters
  * through inheritance
- * <p/>
+ * <p>
  * This is to have following infra init parameters to all the filter
- * <p/>
+ * <p>
  * - ignoreURLPattern - to ignore the URLs matching this regex
  * - acceptURLPattern - to process the URLs matching this regex (ignore precedes)
  * - ignoreMIMEPattern - to ignore if the response mime matches this regex
  * - acceptMIMEPattern - to process if the response mime matches this regex (ignore precedes)
  * - ignoreUAPattern - to ignore if request user agent name matches this regex
  * - acceptUAPattern - to process if request user agent name matches this regex
- * <p/>
+ * <p>
  * This filter implements IgnoreAcceptContext with the help of above init parameters and provides
  * easy api for inherited filters to know if given req/res to be ignored or processes.
  *

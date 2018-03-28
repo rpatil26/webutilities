@@ -217,7 +217,7 @@ public class NewModulesFilter extends AbstractFilter {
      * Class that holds the configuration details. It parses and loads the modules their rules from
      * modules.conf file. Default load API without any param uses the default modules.conf file
      * bundled with the jar.
-     * <p/>
+     * <p>
      * Default modules.conf has default standard optimization rules for JS, CSS, Images. Refer default
      * modules.conf file for more details.
      */

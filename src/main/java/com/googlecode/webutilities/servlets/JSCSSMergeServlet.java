@@ -126,7 +126,7 @@ import static com.googlecode.webutilities.util.Utils.*;
  * The multiple JS or CSS files <b>can be combined together in one request if they are in same parent path</b>. eg. <code><b>/myapp/js/a.js</b></code>, <code><b>/myapp/js/b.js</b></code> and <code><b>/myapp/js/c.js</b></code>
  * can be combined together as <code><b>/myapp/js/a,b,c.js</b></code>. If they are not in infra path then they can not be combined in one request. Same applies for CSS too.
  * </p>
- * <p/>
+ * <p>
  * Visit http://code.google.com/p/webutilities/wiki/JSCSSMergeServlet for more details.
  * Also visit http://code.google.com/p/webutilities/wiki/AddExpiresHeader for details about how to use for setting
  * expires/Cache control header.

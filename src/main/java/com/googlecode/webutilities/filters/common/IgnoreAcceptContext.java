@@ -18,7 +18,7 @@ package com.googlecode.webutilities.filters.common;
 
 /**
  * Interface to provide an API for filters to check if given req/res has to be ignore or processed.
- * <p/>
+ * <p>
  * AbstractFilter implements it with the help of six init parameters.
  *
  * @see AbstractFilter for the implementation

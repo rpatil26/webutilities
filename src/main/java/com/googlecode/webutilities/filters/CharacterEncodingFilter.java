@@ -36,7 +36,7 @@ import static com.googlecode.webutilities.util.Utils.*;
  * doesn't have any encoding set already by client). If client has already set the encoding on request but you still want
  * to enforce to use this encoding then you can even force it (using force = true). If you are using Servlet 2.4 and force
  * is true then not just request but the response will also be forced to the specified encoding.
- * <p/>
+ * <p>
  * This is very similar to CharacterEncodingFilter in Spring framework.
  * Look at http://static.springsource.org/spring/docs/2.0.x/api/org/springframework/web/filter/CharacterEncodingFilter.html
  * </p>
@@ -95,7 +95,7 @@ import static com.googlecode.webutilities.util.Utils.*;
  *  <b>ignoreUAPattern</b> - regular expression for user agent. e.g. <code>MSIE|KHTML</code>.
  *  <b>acceptUAPattern</b> - regular expression. e.g. <code>WebKit|Opera</code>.
  * </pre>
- * <p/>
+ * <p>
  * Visit http://code.google.com/p/webutilities/wiki/CharacterEncodingFilter for more details.
  *
  * @author rpatil

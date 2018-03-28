@@ -37,7 +37,7 @@ import static com.googlecode.webutilities.util.Utils.readLong;
  * Servlet Filter implementation class CompressionFilter to handle compressed requests
  * and also respond with compressed contents supporting gzip, compress or
  * deflate compression encoding.
- * <p/>
+ * <p>
  * Visit http://code.google.com/p/webutilities/wiki/CompressionFilter for more details.
  *
  * @author rpatil

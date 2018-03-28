@@ -95,7 +95,7 @@ import static com.googlecode.webutilities.util.Utils.readInt;
  * <p> As a best practice you should also add appropriate expires header on static resources so that browser caches them and doesn't request them again and again.
  * You can use the <code>JSCSSMergeServlet</code> from <code>webutilities.jar</code> to add expires header on JS and CSS. It also helps combines multiple JS or CSS requests in one HTTP request. See <code>JSCSSMergeServlet</code> for details.
  * </p>
- * <p/>
+ * <p>
  * Visit http://code.google.com/p/webutilities/wiki/YUIMinFilter for more details.
  *
  * @author rpatil

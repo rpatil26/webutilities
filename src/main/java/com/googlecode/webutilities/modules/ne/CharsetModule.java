@@ -28,7 +28,7 @@ import java.nio.charset.Charset;
 
 /**
  * Charset Module
- * <p/>
+ * <p>
  * Example rules
  * Charset UTF-8 force
  */

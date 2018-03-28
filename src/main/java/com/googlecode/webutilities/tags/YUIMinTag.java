@@ -73,13 +73,13 @@ import static com.googlecode.webutilities.common.Constants.*;
  *  <b>preserveSemi</b> - equivalent to YUICompressor --preserve-semi. Preserve all semicolons.
  *  <b>disableOptimizations</b> - equivalent to YUICompressor --disable-optimizations. Disable all micro optimizations.
  * </pre>
- * <p/>
+ * <p>
  * <h3>Dependency</h3>
  * <p>The <code>YUIMinTag</code> depends on jsp-api and YUICompressor jar to be in the classpath.</p>
  * <p><b>jsp-api.jar</b> - Must be already present in your webapp classpath</p>
  * <p><b>yuicompressor-x.y.z.jar</b> - Download and put appropriate version of this jar in your classpath (in WEB-INF/lib)</p>
- * <p/>
- * <p/>
+ * <p>
+ * <p>
  * Visit http://code.google.com/p/webutilities/wiki/YUIMinTag for more details.
  *
  * @author rpatil

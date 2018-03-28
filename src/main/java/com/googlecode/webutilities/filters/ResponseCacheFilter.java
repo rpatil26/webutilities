@@ -74,7 +74,7 @@ import static com.googlecode.webutilities.util.Utils.*;
  * <p>
  * And you are all done!
  * </p>
- * <p/>    `
+ * <p>    `
  * Visit http://code.google.com/p/webutilities/wiki/ResponseCacheFilter for more details.
  *
  * @author rpatil
